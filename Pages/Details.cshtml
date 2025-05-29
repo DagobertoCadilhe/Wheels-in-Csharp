@@ -1,0 +1,24 @@
+﻿@page "/veiculo/{slug}/{id:int:min(1)}"
+@using Wheels_in_CSharp.Pages;
+@model DetailsModel
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h2 class="my-3">@Model.Vehicle.Model</h2>
+<div class="row">
+    <div class="col-4">
+        <img class="img-fluid rounded" src="">
+    </div>
+    <div class="col-6">
+        <h4 class="my-3">Sobre:</h4>
+        <p>@Model.Vehicle.Description</p>
+        <h4 class="my-3">Mais Info:</h4>
+        <ul>
+            <li><label asp-for="Vehicle.HourlyRate"></label>: @Html.DisplayFor(model => model.Vehicle.HourlyRate)</li>
+            <li><label asp-for="Vehicle.Status"></label>: @Model.Vehicle.Status</li>
+            <li><label asp-for="Vehicle.LicensePlate"></label>: @Html.DisplayFor(model => model.Vehicle.LicensePlate)</li>
+        </ul>
+        <a class="btn my-3 btn-primary" asp-page="/Edit" asp-route-id="@Model.Vehicle.Id">Editar</a>
+    </div>
+</div>

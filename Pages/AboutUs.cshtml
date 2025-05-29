@@ -1,0 +1,152 @@
+﻿@page
+@model Pages_AboutUs
+@{
+    ViewData["Title"] = "Quem Somos";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 text-primary mb-4">@ViewData["Title"]</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossa História</h2>
+                <p class="lead">
+                    O <strong>Wheels</strong> é uma plataforma inovadora de <strong>mobilidade urbana</strong> que nasceu com o propósito de revolucionar a forma como as pessoas se deslocam nas cidades. Desenvolvido como um projeto acadêmico no Instituto Infnet, nosso sistema representa uma solução moderna e integrada para os desafios de transporte urbano contemporâneo.
+                </p>
+                <p>
+                    Nossa jornada começou com a visão de criar uma plataforma unificada que pudesse atender às diversas necessidades de mobilidade dos usuários urbanos, oferecendo desde bicicletas para trajetos ecológicos até carros e motos para deslocamentos mais longos ou específicos.
+                </p>
+            </div>
+
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossa Missão</h2>
+                <p>
+                    Promover a <strong>mobilidade urbana sustentável</strong> através de uma plataforma tecnológica que conecta pessoas a diferentes modalidades de transporte, contribuindo para cidades mais inteligentes, menos congestionadas e ambientalmente responsáveis.
+                </p>
+            </div>
+
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">O Que Oferecemos</h2>
+                <p>
+                    O Wheels é uma <strong>plataforma de mobilidade urbana</strong> completa que disponibiliza:
+                </p>
+
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-bicycle fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Bicicletas</h5>
+                                <p class="card-text">Opção ecológica e saudável para trajetos curtos e médios pela cidade.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-car fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Carros</h5>
+                                <p class="card-text">Conforto e praticidade para deslocamentos longos ou com maior capacidade.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-motorcycle fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Motos</h5>
+                                <p class="card-text">Agilidade no trânsito urbano para deslocamentos rápidos e eficientes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossa Tecnologia</h2>
+                <p>
+                    Desenvolvido com tecnologia <strong>C# .NET</strong>, o Wheels utiliza uma arquitetura orientada a objetos flexível e escalável. Nossa plataforma foi projetada seguindo as melhores práticas de desenvolvimento de software, garantindo:
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i> Sistema de gerenciamento de frota inteligente</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Cálculo automático de preços baseado no tipo e tempo de aluguel</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Rastreamento em tempo real da disponibilidade de veículos</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Histórico completo de aluguéis por usuário</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Interface intuitiva e responsiva</li>
+                </ul>
+            </div>
+
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossos Valores</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-leaf me-2"></i>Sustentabilidade</h5>
+                        <p>Promovemos alternativas de transporte que reduzem o impacto ambiental urbano.</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-users me-2"></i>Acessibilidade</h5>
+                        <p>Democratizamos o acesso à mobilidade urbana para todos os perfis de usuários.</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-rocket me-2"></i>Inovação</h5>
+                        <p>Utilizamos tecnologia de ponta para criar soluções eficientes e modernas.</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-handshake me-2"></i>Confiabilidade</h5>
+                        <p>Garantimos qualidade e segurança em todos os nossos serviços.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Projeto Acadêmico</h5>
+                    <p class="card-text">
+                        O Wheels é um projeto desenvolvido no <strong>Instituto Infnet</strong> como parte do curso de Graduação em Engenharia de Computação, representando a aplicação prática de conceitos avançados de desenvolvimento de software.
+                    </p>
+                    <hr>
+                    <h6 class="text-secondary">Especificações Técnicas</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>ID do Projeto:</strong> WHEELS-MOBILITY-2025</li>
+                        <li><strong>Tecnologia:</strong> C# .NET</li>
+                        <li><strong>Arquitetura:</strong> Orientada a Objetos</li>
+                        <li><strong>Modalidade:</strong> Mobilidade Urbana</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Futuro do Wheels</h5>
+                    <p class="card-text">
+                        Estamos constantemente evoluindo nossa plataforma de <strong>mobilidade urbana</strong>. Em breve, novos recursos e funcionalidades serão implementados para melhorar ainda mais a experiência dos nossos usuários.
+                    </p>
+                    <small class="text-muted">
+                        Acompanhe nossas atualizações e seja parte da revolução da mobilidade urbana!
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adicione Font Awesome para os ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<!-- Personalização de cores -->
+<style>
+    .text-primary {
+        color: #6d7883 !important;
+    }
+
+    .border-primary {
+        border-color: #6d7883 !important;
+    }
+</style>
