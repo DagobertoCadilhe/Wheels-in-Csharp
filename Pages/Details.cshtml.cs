@@ -1,6 +1,6 @@
 ﻿using Wheels_in_Csharp.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Wheels_in_CSharp.Services.Memory;
+using Wheels_in_Csharp.Services.Memory;
 
 namespace Wheels_in_CSharp.Pages
 {

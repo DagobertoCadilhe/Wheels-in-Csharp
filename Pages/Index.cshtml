@@ -5,41 +5,21 @@
     ViewData["Title"] = "Veículos Disponíveis";
 }
 
-<div class="container">
-    <h1 class="text-center mb-4">Veículos para Locação</h1>
-
-    <div class="row justify-content-md-center">
-        @foreach (var vehicle in Model.Vehicles)
-        {
-            <div class="card col-3 m-3">
-                <div class="d-flex align-items-center justify-content-center p-3" style="height: 200px; background-color: #f8f9fa; border-radius: 25px;">
-                    @{
-                        string vehicleType = vehicle.GetType().Name;
-                    }
-                    @if (vehicleType == "Car")
-                    {
-                        <span style="font-size: 5rem;">🚗</span>
-                    }
-                    else if (vehicleType == "Motorcycle")
-                    {
-                        <span style="font-size: 5rem;">🏍️</span>
-                    }
-                    else if (vehicleType == "Bicycle")
-                    {
-                        <span style="font-size: 5rem;">🚲</span>
-                    }
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@vehicle.Model</h5>
-                    <p class="card-text">
-                        Ano: @vehicle.Year | @vehicle.HourlyRate.ToString("C")/hora<br>
-                        Status: <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">@vehicle.Status.ToString()</span>
-                    </p>
-                    <a class="btn btn-primary" asp-page="/Details"
-                       asp-route-slug="@vehicle.NomeSlug"
-                       asp-route-id="@vehicle.Id">Ver mais</a>
-                </div>
+<div class="row justify-content-md-center">
+    @foreach (var vehicle in Model.Vehicles)
+    {
+        <div class="card col-3 m-3">
+            <img src="@vehicle.ImagemUri" class="p-3" style="border-radius: 25px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
+            <div class="card-body">
+                <h5 class="card-title">@vehicle.Model</h5>
+                <p class="card-text">
+                    Ano: @vehicle.Year | @vehicle.HourlyRate.ToString("C")/hora<br>
+                    Status: <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">@vehicle.Status.ToString()</span>
+                </p>
+                <a class="btn btn-primary" asp-page="/Details"
+                   asp-route-slug="@vehicle.NomeSlug"
+                   asp-route-id="@vehicle.Id">Ver mais</a>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

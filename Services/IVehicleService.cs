@@ -1,6 +1,6 @@
 ﻿using Wheels_in_Csharp.Models;
 
-namespace Wheels_in_CSharp.Services.Memory
+namespace Wheels_in_Csharp.Services.Memory
 {
     public interface IVehicleService
     {

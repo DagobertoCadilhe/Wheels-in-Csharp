@@ -1,9 +1,10 @@
-using Wheels_in_CSharp.Services.Memory;
+using Wheels_in_Csharp.Services.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
-builder.Services.AddTransient<IVehicleService, VehicleService>(); 
+
+builder.Services.AddTransient<IVehicleService, VehicleService>();
 
 var app = builder.Build();
 
