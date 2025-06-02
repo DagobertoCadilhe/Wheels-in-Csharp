@@ -1,24 +1,384 @@
 ﻿@page "/veiculo/{slug}/{id:int:min(1)}"
 @using Wheels_in_CSharp.Pages;
+@using Wheels_in_Csharp.Models;
 @model DetailsModel
 @{
-    ViewData["Title"] = "Detalhes";
+    ViewData["Title"] = $"Detalhes - {Model.Vehicle.Model}";
+
+    // Single declarations at the top
+    var car = Model.Vehicle as Car;
+    var moto = Model.Vehicle as Motorcycle;
+    var bike = Model.Vehicle as Bicycle;
 }
 
-<h2 class="my-3">@Model.Vehicle.Model</h2>
-<div class="row">
-    <div class="col-4">
-        <img class="img-fluid rounded" src="">
-    </div>
-    <div class="col-6">
-        <h4 class="my-3">Sobre:</h4>
-        <p>@Model.Vehicle.Description</p>
-        <h4 class="my-3">Mais Info:</h4>
-        <ul>
-            <li><label asp-for="Vehicle.HourlyRate"></label>: @Html.DisplayFor(model => model.Vehicle.HourlyRate)</li>
-            <li><label asp-for="Vehicle.Status"></label>: @Model.Vehicle.Status</li>
-            <li><label asp-for="Vehicle.LicensePlate"></label>: @Html.DisplayFor(model => model.Vehicle.LicensePlate)</li>
-        </ul>
-        <a class="btn my-3 btn-primary" asp-page="/Edit" asp-route-id="@Model.Vehicle.Id">Editar</a>
+<div class="container py-5">
+    <div class="row">
+        <!-- Image Column -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <img class="card-img-top img-fluid rounded-top" src="@Model.Vehicle.ImagemUri" alt="@Model.Vehicle.Model" onerror="this.src='/images/placeholder-vehicle.jpg'">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="card-title mb-0">@Model.Vehicle.Model</h2>
+                        <span class="badge bg-@GetStatusBadgeColor(Model.Vehicle.Status) text-white">
+                            @GetStatusDisplayName(Model.Vehicle.Status)
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h4 class="text-primary mb-0">@Model.Vehicle.HourlyRate.ToString("C")/hora</h4>
+                            <small class="text-muted">Ano: @Model.Vehicle.Year</small>
+                        </div>
+                        @if (Model.Vehicle.Available)
+                        {
+                            <a href="/reservar/@Model.Vehicle.Id" class="btn btn-primary btn-lg py-2 px-4">
+                                <i class="bi bi-calendar-check me-2"></i>Reservar
+                            </a>
+                        }
+                    </div>
+
+                    <div class="vehicle-features mb-3">
+                        @if (car != null)
+                        {
+                            <span class="badge bg-light text-dark me-2 mb-2">
+                                <i class="bi bi-people-fill me-1"></i> @car.Seats lugares
+                            </span>
+                            <span class="badge bg-light text-dark me-2 mb-2">
+                                <i class="bi bi-gear me-1"></i> @car.Transmission
+                            </span>
+                            @if (car.HasAC)
+                            {
+                                <span class="badge bg-light text-dark me-2 mb-2">
+                                    <i class="bi bi-snow2 me-1"></i> Ar-condicionado
+                                </span>
+                            }
+                        }
+                        else if (moto != null)
+                        {
+                            <span class="badge bg-light text-dark me-2 mb-2">
+                                <i class="bi bi-speedometer2 me-1"></i> @moto.EngineCapacity cc
+                            </span>
+                            @if (moto.HasHelmet)
+                            {
+                                <span class="badge bg-light text-dark me-2 mb-2">
+                                    <i class="bi bi-bicycle me-1"></i> Capacete incluso
+                                </span>
+                            }
+                        }
+                        else if (bike != null)
+                        {
+                            <span class="badge bg-light text-dark me-2 mb-2">
+                                <i class="bi bi-bicycle me-1"></i> @bike.BikeType
+                            </span>
+                            @if (bike.HasHelmet)
+                            {
+                                <span class="badge bg-light text-dark me-2 mb-2">
+                                    <i class="bi bi-shield me-1"></i> Capacete
+                                </span>
+                            }
+                            @if (bike.HasLock)
+                            {
+                                <span class="badge bg-light text-dark me-2 mb-2">
+                                    <i class="bi bi-lock me-1"></i> Cadeado
+                                </span>
+                            }
+                        }
+                    </div>
+
+                    <div class="vehicle-info">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">Placa</small>
+                                    <div class="fw-bold">@Model.Vehicle.LicensePlate</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">Última manutenção</small>
+                                    <div class="fw-bold">@Model.Vehicle.LastMaintenance.ToString("MMM/yyyy")</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Column -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="vehicleTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                                <i class="bi bi-card-text me-1"></i> Descrição
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab">
+                                <i class="bi bi-gear me-1"></i> Especificações
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pricing-tab" data-bs-toggle="tab" data-bs-target="#pricing" type="button" role="tab">
+                                <i class="bi bi-cash-coin me-1"></i> Valores
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content py-4" id="vehicleTabsContent">
+                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                            <h4 class="mb-3">Sobre o veículo</h4>
+                            <p>@Model.Vehicle.Description</p>
+
+                            @if (car != null)
+                            {
+                                <div class="mt-4">
+                                    <h5>Informações específicas do carro</h5>
+                                    <p>Este veículo é ideal para @(car.Seats > 4 ? "famílias" : "casais ou pequenos grupos") que desejam conforto e praticidade.</p>
+                                </div>
+                            }
+                            else if (moto != null)
+                            {
+                                <div class="mt-4">
+                                    <h5>Informações específicas da moto</h5>
+                                    <p>Com @moto.EngineCapacity cc, esta moto oferece potência e agilidade para suas aventuras urbanas.</p>
+                                </div>
+                            }
+                            else if (bike != null)
+                            {
+                                <div class="mt-4">
+                                    <h5>Informações específicas da bicicleta</h5>
+                                    <p>Bicicleta do tipo @bike.BikeType.ToLower(), perfeita para @(bike.BikeType == "Mountain" ? "trilhas e terrenos acidentados" : "passeios urbanos").</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="tab-pane fade" id="specs" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">Informações gerais</h5>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            <span class="text-muted">Modelo</span>
+                                            <span class="fw-bold">@Model.Vehicle.Model</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            <span class="text-muted">Ano</span>
+                                            <span class="fw-bold">@Model.Vehicle.Year</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            <span class="text-muted">Placa</span>
+                                            <span class="fw-bold">@Model.Vehicle.LicensePlate</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            <span class="text-muted">Status</span>
+                                            <span class="fw-bold">@GetStatusDisplayName(Model.Vehicle.Status)</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            <span class="text-muted">Última manutenção</span>
+                                            <span class="fw-bold">@Model.Vehicle.LastMaintenance.ToString("dd/MM/yyyy")</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    @if (car != null)
+                                    {
+                                        <h5 class="mb-3">Especificações do carro</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Combustível</span>
+                                                <span class="fw-bold">@car.FuelType</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Câmbio</span>
+                                                <span class="fw-bold">@car.Transmission</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Assentos</span>
+                                                <span class="fw-bold">@car.Seats</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Ar-condicionado</span>
+                                                <span class="fw-bold">@(car.HasAC ? "Sim" : "Não")</span>
+                                            </li>
+                                        </ul>
+                                    }
+                                    else if (moto != null)
+                                    {
+                                        <h5 class="mb-3">Especificações da moto</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Cilindrada</span>
+                                                <span class="fw-bold">@moto.EngineCapacity cc</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Capacete</span>
+                                                <span class="fw-bold">@(moto.HasHelmet ? "Incluso" : "Não incluso")</span>
+                                            </li>
+                                        </ul>
+                                    }
+                                    else if (bike != null)
+                                    {
+                                        <h5 class="mb-3">Especificações da bicicleta</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Tipo</span>
+                                                <span class="fw-bold">@bike.BikeType</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Capacete</span>
+                                                <span class="fw-bold">@(bike.HasHelmet ? "Incluso" : "Não incluso")</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-muted">Cadeado</span>
+                                                <span class="fw-bold">@(bike.HasLock ? "Incluso" : "Não incluso")</span>
+                                            </li>
+                                        </ul>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pricing" role="tabpanel">
+                            <h5 class="mb-3">Tabela de preços</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Período</th>
+                                            <th>Valor</th>
+                                            <th>Economia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Hora</td>
+                                            <td>@Model.Vehicle.HourlyRate.ToString("C")</td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diária (8 horas)</td>
+                                            <td>@((Model.Vehicle.HourlyRate * 8 * 0.9m).ToString("C"))</td>
+                                            <td>10%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Semanal (7 dias)</td>
+                                            <td>@((Model.Vehicle.HourlyRate * 8 * 7 * 0.8m).ToString("C"))</td>
+                                            <td>20%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="alert alert-info mt-3">
+                                <h6><i class="bi bi-info-circle me-2"></i>Informações adicionais</h6>
+                                <ul class="mb-0">
+                                    <li>Taxa de combustível não incluída (para veículos motorizados)</li>
+                                    <li>Seguro básico incluído em todos os planos</li>
+                                    <li>Pagamento via PIX tem 5% de desconto adicional</li>
+                                    <li>Multa por atraso: @((Model.Vehicle.HourlyRate * 1.5m).ToString("C"))/hora</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/veiculos" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Voltar para lista
+                        </a>
+                        <div>
+                            <a class="btn btn-outline-primary me-2" asp-page="/Edit" asp-route-id="@Model.Vehicle.Id">
+                                <i class="bi bi-pencil me-2"></i>Editar
+                            </a>
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash me-2"></i>Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir o veículo <strong>@Model.Vehicle.Model</strong>? Esta ação não pode ser desfeita.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.Vehicle.Id">
+                    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeColor(VehicleStatus status)
+    {
+        return status switch
+        {
+            VehicleStatus.AVAILABLE => "success",
+            VehicleStatus.RENTED => "warning",
+            VehicleStatus.MAINTENANCE => "info",
+            VehicleStatus.DAMAGED => "danger",
+            VehicleStatus.RETIRED => "secondary",
+            _ => "secondary"
+        };
+    }
+
+    string GetStatusDisplayName(VehicleStatus status)
+    {
+        return status switch
+        {
+            VehicleStatus.AVAILABLE => "Disponível",
+            VehicleStatus.RENTED => "Alugado",
+            VehicleStatus.MAINTENANCE => "Em manutenção",
+            VehicleStatus.DAMAGED => "Danificado",
+            VehicleStatus.RETIRED => "Desativado",
+            _ => status.ToString()
+        };
+    }
+}
+
+@section Styles {
+    <style>
+        .nav-tabs .nav-link {
+            color: #495057;
+            font-weight: 500;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #0d6efd;
+                border-bottom: 3px solid #0d6efd;
+                background-color: transparent;
+            }
+
+        .card {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .vehicle-features .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.65em;
+        }
+
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+        }
+    </style>
+}

@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddTransient<IVehicleService, VehicleService>();
+builder.Services.AddSingleton<IVehicleService, VehicleService>();
 
 var app = builder.Build();
 

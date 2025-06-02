@@ -6,12 +6,35 @@
 }
 
 <div class="container mt-4">
+    <!-- Mensagens de Feedback -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle mr-2"></i>
+            <strong>Sucesso!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Erro!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h2 class="mb-0"><i class="fas fa-plus-circle mr-2"></i>Cadastrar Novo Veículo</h2>
         </div>
         <div class="card-body">
-            <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+            <form method="post" class="needs-validation" novalidate id="vehicleForm">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                 <div class="row">
@@ -27,68 +50,63 @@
 
                         <!-- Informações Básicas -->
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Modelo</label>
-                            <input name="@(Model.VehicleType).Model" class="form-control" placeholder="Ex: Gol 1.0" />
-                            <span class="text-danger"></span>
+                            <label asp-for="Model" class="control-label font-weight-bold">Modelo</label>
+                            <input asp-for="Model" class="form-control" placeholder="Ex: Gol 1.0" />
+                            <span asp-validation-for="Model" class="text-danger"></span>
                         </div>
 
+                        <!-- URL da Imagem -->
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Imagem do Veículo</label>
-                            <div class="custom-file mb-2">
-                                <input type="file" class="custom-file-input" id="vehicleImage"
-                                       name="vehicleImage" accept="image/*">
-                                <label class="custom-file-label" for="vehicleImage">Escolher arquivo...</label>
-                            </div>
-                            <small class="form-text text-muted mb-3">Ou insira uma URL:</small>
-                            <input name="@(Model.VehicleType).ImagemUri" class="form-control"
+                            <label class="control-label font-weight-bold">URL da Imagem do Veículo</label>
+                            <input asp-for="ImagemUri" class="form-control"
                                    placeholder="https://exemplo.com/imagem.jpg" />
                             <div class="mt-2" id="imagePreview" style="display: none;">
                                 <img id="previewImage" src="#" alt="Pré-visualização" class="img-thumbnail" style="max-height: 150px;">
                             </div>
-                            <span class="text-danger"></span>
+                            <span asp-validation-for="ImagemUri" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Descrição</label>
-                            <textarea name="@(Model.VehicleType).Description" class="form-control" rows="3" placeholder="Descrição detalhada do veículo"></textarea>
-                            <span class="text-danger"></span>
+                            <label asp-for="Description" class="control-label font-weight-bold">Descrição</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Descrição detalhada do veículo"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Ano</label>
-                            <input name="@(Model.VehicleType).Year" class="form-control" type="number" placeholder="Ex: 2019" min="1900" max="@(DateTime.Now.Year + 1)" />
-                            <span class="text-danger"></span>
+                            <label asp-for="Year" class="control-label font-weight-bold">Ano</label>
+                            <input asp-for="Year" class="form-control" type="number" placeholder="Ex: 2019" min="1900" max="@(DateTime.Now.Year + 1)" />
+                            <span asp-validation-for="Year" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Valor por Hora (R$)</label>
+                            <label asp-for="HourlyRate" class="control-label font-weight-bold">Valor por Hora (R$)</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">R$</span>
                                 </div>
-                                <input name="@(Model.VehicleType).HourlyRate" class="form-control" type="number" step="0.01" />
+                                <input asp-for="HourlyRate" class="form-control" type="number" step="0.01" />
                             </div>
-                            <span class="text-danger"></span>
+                            <span asp-validation-for="HourlyRate" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Placa</label>
-                            <input name="@(Model.VehicleType).LicensePlate" class="form-control" placeholder="ABC-1234" />
-                            <span class="text-danger"></span>
+                            <label asp-for="LicensePlate" class="control-label font-weight-bold">Placa</label>
+                            <input asp-for="LicensePlate" class="form-control" placeholder="ABC-1234" />
+                            <span asp-validation-for="LicensePlate" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Última Manutenção</label>
-                            <input name="@(Model.VehicleType).LastMaintenance" type="month" class="form-control" />
-                            <span class="text-danger"></span>
+                            <label asp-for="LastMaintenance" class="control-label font-weight-bold">Última Manutenção</label>
+                            <input asp-for="LastMaintenance" type="month" class="form-control" />
+                            <span asp-validation-for="LastMaintenance" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">Status</label>
-                            <select name="Status" asp-items="Model.StatusList" class="form-control"></select>
-                            <span class="text-danger"></span>
+                            <label asp-for="Status" class="control-label font-weight-bold">Status</label>
+                            <select asp-for="Status" asp-items="Model.StatusList" class="form-control"></select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -169,7 +187,7 @@
                 </div>
 
                 <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-success btn-lg mr-2">
+                    <button type="submit" class="btn btn-success btn-lg mr-2" id="submitButton">
                         <i class="fas fa-save mr-2"></i>Cadastrar Veículo
                     </button>
                     <a asp-page="Index" class="btn btn-outline-secondary btn-lg">
@@ -204,37 +222,34 @@
             }
         });
 
-        // Mostrar nome do arquivo selecionado
-        document.querySelector('.custom-file-input').addEventListener('change', function(e) {
-            var fileName = document.getElementById("vehicleImage").files[0].name;
-            var nextSibling = e.target.nextElementSibling;
-            nextSibling.innerText = fileName;
-        });
-
-        // Pré-visualização da imagem (tanto para upload quanto URL)
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#previewImage').attr('src', e.target.result);
-                    $('#imagePreview').show();
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $("#vehicleImage").change(function() {
-            readURL(this);
-        });
-
-        $("input[name$='ImagemUri']").on('input', function() {
-            if ($(this).val().match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                $('#previewImage').attr('src', $(this).val());
+        // Pré-visualização da imagem via URL
+        $("input[name='ImagemUri']").on('input', function() {
+            var url = $(this).val();
+            if (url && url.match(/\.(jpeg|jpg|gif|png)$/i) != null) {
+                $('#previewImage').attr('src', url);
                 $('#imagePreview').show();
             } else {
                 $('#imagePreview').hide();
             }
         });
+
+        // Feedback visual durante o envio do formulário
+        $('#vehicleForm').on('submit', function() {
+            var submitBtn = $('#submitButton');
+            submitBtn.prop('disabled', true);
+            submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i>Cadastrando...');
+
+            // Reabilitar o botão após 10 segundos como segurança
+            setTimeout(function() {
+                submitBtn.prop('disabled', false);
+                submitBtn.html('<i class="fas fa-save mr-2"></i>Cadastrar Veículo');
+            }, 10000);
+        });
+
+        // Auto-hide alerts após 5 segundos
+        setTimeout(function() {
+            $('.alert').fadeOut(500);
+        }, 5000);
     </script>
 
     <style>
@@ -263,8 +278,27 @@
             font-size: 1.1rem;
         }
 
-        .custom-file-label::after {
-            content: "Procurar";
+        .alert {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert i {
+            color: inherit;
         }
     </style>
 }
