@@ -1,365 +1,152 @@
 ﻿@page
-@model Wheels_in_Csharp.Pages.CreateModel
-
+@model Pages_AboutUs
 @{
-    ViewData["Title"] = "Cadastrar Novo Veículo";
+    ViewData["Title"] = "Quem Somos";
 }
 
 <div class="container mt-4">
-    <!-- Mensagens de Feedback -->
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle mr-2"></i>
-            <strong>Sucesso!</strong> @TempData["SuccessMessage"]
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 text-primary mb-4">@ViewData["Title"]</h1>
         </div>
-    }
+    </div>
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle mr-2"></i>
-            <strong>Erro!</strong> @TempData["ErrorMessage"]
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    }
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossa História</h2>
+                <p class="lead">
+                    O <strong>Wheels</strong> é uma plataforma inovadora de <strong>mobilidade urbana</strong> que nasceu com o propósito de revolucionar a forma como as pessoas se deslocam nas cidades. Desenvolvido como um projeto acadêmico no Instituto Infnet, nosso sistema representa uma solução moderna e integrada para os desafios de transporte urbano contemporâneo.
+                </p>
+                <p>
+                    Nossa jornada começou com a visão de criar uma plataforma unificada que pudesse atender às diversas necessidades de mobilidade dos usuários urbanos, oferecendo desde bicicletas para trajetos ecológicos até carros e motos para deslocamentos mais longos ou específicos.
+                </p>
+            </div>
 
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0"><i class="fas fa-plus-circle mr-2"></i>Cadastrar Novo Veículo</h2>
-            <small class="text-light">Todos os campos são opcionais - preencha apenas os que desejar</small>
-        </div>
-        <div class="card-body">
-            <form method="post" class="needs-validation" novalidate id="vehicleForm">
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossa Missão</h2>
+                <p>
+                    Promover a <strong>mobilidade urbana sustentável</strong> através de uma plataforma tecnológica que conecta pessoas a diferentes modalidades de transporte, contribuindo para cidades mais inteligentes, menos congestionadas e ambientalmente responsáveis.
+                </p>
+            </div>
 
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">O Que Oferecemos</h2>
+                <p>
+                    O Wheels é uma <strong>plataforma de mobilidade urbana</strong> completa que disponibiliza:
+                </p>
+
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-bicycle fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Bicicletas</h5>
+                                <p class="card-text">Opção ecológica e saudável para trajetos curtos e médios pela cidade.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-car fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Carros</h5>
+                                <p class="card-text">Conforto e praticidade para deslocamentos longos ou com maior capacidade.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-motorcycle fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Motos</h5>
+                                <p class="card-text">Agilidade no trânsito urbano para deslocamentos rápidos e eficientes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossa Tecnologia</h2>
+                <p>
+                    Desenvolvido com tecnologia <strong>C# .NET</strong>, o Wheels utiliza uma arquitetura orientada a objetos flexível e escalável. Nossa plataforma foi projetada seguindo as melhores práticas de desenvolvimento de software, garantindo:
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i> Sistema de gerenciamento de frota inteligente</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Cálculo automático de preços baseado no tipo e tempo de aluguel</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Rastreamento em tempo real da disponibilidade de veículos</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Histórico completo de aluguéis por usuário</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Interface intuitiva e responsiva</li>
+                </ul>
+            </div>
+
+            <div class="mb-5">
+                <h2 class="h3 text-secondary mb-3">Nossos Valores</h2>
                 <div class="row">
-                    <div class="col-md-6">
-                        <!-- Tipo de Veículo -->
-                        <div class="form-group">
-                            <label asp-for="VehicleType" class="control-label font-weight-bold">
-                                Tipo de Veículo
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <select asp-for="VehicleType" asp-items="Model.VehicleTypes" class="form-control form-control-lg">
-                                <option value="">Selecione o tipo de veículo (opcional)</option>
-                            </select>
-                            <span asp-validation-for="VehicleType" class="text-danger"></span>
-                        </div>
-
-                        <!-- Informações Básicas -->
-                        <div class="form-group">
-                            <label asp-for="Model" class="control-label font-weight-bold">
-                                Modelo
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <input asp-for="Model" class="form-control" placeholder="Ex: Gol 1.0 (opcional)" />
-                            <span asp-validation-for="Model" class="text-danger"></span>
-                        </div>
-
-                        <!-- URL da Imagem -->
-                        <div class="form-group">
-                            <label class="control-label font-weight-bold">
-                                URL da Imagem do Veículo
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <input asp-for="ImagemUri" class="form-control"
-                                   placeholder="https://exemplo.com/imagem.jpg (opcional)" />
-                            <div class="mt-2" id="imagePreview" style="display: none;">
-                                <img id="previewImage" src="#" alt="Pré-visualização" class="img-thumbnail" style="max-height: 150px;">
-                            </div>
-                            <span asp-validation-for="ImagemUri" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Description" class="control-label font-weight-bold">
-                                Descrição
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Descrição detalhada do veículo (opcional)"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-leaf me-2"></i>Sustentabilidade</h5>
+                        <p>Promovemos alternativas de transporte que reduzem o impacto ambiental urbano.</p>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Year" class="control-label font-weight-bold">
-                                Ano
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <input asp-for="Year" class="form-control" type="number" placeholder="Ex: 2019 (opcional)" min="1900" max="@(DateTime.Now.Year + 1)" />
-                            <span asp-validation-for="Year" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="HourlyRate" class="control-label font-weight-bold">
-                                Valor por Hora (R$)
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">R$</span>
-                                </div>
-                                <input asp-for="HourlyRate" class="form-control" type="number" step="0.01" placeholder="0.00 (opcional)" />
-                            </div>
-                            <span asp-validation-for="HourlyRate" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="LicensePlate" class="control-label font-weight-bold">
-                                Placa
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <input asp-for="LicensePlate" class="form-control" placeholder="ABC-1234 (opcional)" />
-                            <span asp-validation-for="LicensePlate" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="LastMaintenance" class="control-label font-weight-bold">
-                                Última Manutenção
-                                <small class="text-muted">(opcional)</small>
-                            </label>
-                            <input asp-for="LastMaintenance" type="month" class="form-control" />
-                            <small class="form-text text-muted">Se não informado, será usado a data atual</small>
-                            <span asp-validation-for="LastMaintenance" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Status" class="control-label font-weight-bold">Status</label>
-                            <select asp-for="Status" asp-items="Model.StatusList" class="form-control"></select>
-                            <span asp-validation-for="Status" class="text-danger"></span>
-                        </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-users me-2"></i>Acessibilidade</h5>
+                        <p>Democratizamos o acesso à mobilidade urbana para todos os perfis de usuários.</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-rocket me-2"></i>Inovação</h5>
+                        <p>Utilizamos tecnologia de ponta para criar soluções eficientes e modernas.</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-primary"><i class="fas fa-handshake me-2"></i>Confiabilidade</h5>
+                        <p>Garantimos qualidade e segurança em todos os nossos serviços.</p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Campos específicos por tipo de veículo -->
-                <div class="mt-4" id="specificFields">
-                    <!-- Carro -->
-                    <div id="carFields" class="vehicle-specific" style="display: none;">
-                        <h4 class="border-bottom pb-2">
-                            <i class="fas fa-car mr-2"></i>Informações do Carro
-                            <small class="text-muted">(todos campos opcionais)</small>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="Car.FuelType" class="control-label">
-                                        Tipo de Combustível
-                                        <small class="text-muted">(opcional)</small>
-                                    </label>
-                                    <input asp-for="Car.FuelType" class="form-control" placeholder="Gasolina, Álcool, etc. (opcional)" />
-                                    <span asp-validation-for="Car.FuelType" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="Car.Seats" class="control-label">
-                                        Número de Assentos
-                                        <small class="text-muted">(opcional)</small>
-                                    </label>
-                                    <input asp-for="Car.Seats" class="form-control" type="number" min="0" placeholder="Ex: 4 (opcional)" />
-                                    <small class="form-text text-muted">Se não informado, será usado 4 assentos</small>
-                                    <span asp-validation-for="Car.Seats" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="Car.Transmission" class="control-label">
-                                        Transmissão
-                                        <small class="text-muted">(opcional)</small>
-                                    </label>
-                                    <input asp-for="Car.Transmission" class="form-control" placeholder="Manual/Automático (opcional)" />
-                                    <span asp-validation-for="Car.Transmission" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Car.HasAC" />
-                            <label class="form-check-label" asp-for="Car.HasAC">Possui Ar Condicionado</label>
-                        </div>
-                    </div>
-
-                    <!-- Moto -->
-                    <div id="motorcycleFields" class="vehicle-specific" style="display: none;">
-                        <h4 class="border-bottom pb-2">
-                            <i class="fas fa-motorcycle mr-2"></i>Informações da Moto
-                            <small class="text-muted">(todos campos opcionais)</small>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Motorcycle.EngineCapacity" class="control-label">
-                                        Cilindrada (cc)
-                                        <small class="text-muted">(opcional)</small>
-                                    </label>
-                                    <input asp-for="Motorcycle.EngineCapacity" class="form-control" type="number" min="0" placeholder="Ex: 150 (opcional)" />
-                                    <small class="form-text text-muted">Se não informado, será usado 150cc</small>
-                                    <span asp-validation-for="Motorcycle.EngineCapacity" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Motorcycle.HasHelmet" />
-                            <label class="form-check-label" asp-for="Motorcycle.HasHelmet">Inclui Capacete</label>
-                        </div>
-                    </div>
-
-                    <!-- Bicicleta -->
-                    <div id="bicycleFields" class="vehicle-specific" style="display: none;">
-                        <h4 class="border-bottom pb-2">
-                            <i class="fas fa-bicycle mr-2"></i>Informações da Bicicleta
-                            <small class="text-muted">(todos campos opcionais)</small>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Bicycle.BikeType" class="control-label">
-                                        Tipo de Bicicleta
-                                        <small class="text-muted">(opcional)</small>
-                                    </label>
-                                    <input asp-for="Bicycle.BikeType" class="form-control" placeholder="Ex: Mountain Bike (opcional)" />
-                                    <span asp-validation-for="Bicycle.BikeType" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Bicycle.HasHelmet" />
-                            <label class="form-check-label" asp-for="Bicycle.HasHelmet">Inclui Capacete</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Bicycle.HasLock" />
-                            <label class="form-check-label" asp-for="Bicycle.HasLock">Inclui Cadeado</label>
-                        </div>
-                    </div>
+        <div class="col-lg-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Projeto Acadêmico</h5>
+                    <p class="card-text">
+                        O Wheels é um projeto desenvolvido no <strong>Instituto Infnet</strong> como parte do curso de Graduação em Engenharia de Computação, representando a aplicação prática de conceitos avançados de desenvolvimento de software.
+                    </p>
+                    <hr>
+                    <h6 class="text-secondary">Especificações Técnicas</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>ID do Projeto:</strong> WHEELS-MOBILITY-2025</li>
+                        <li><strong>Tecnologia:</strong> C# .NET</li>
+                        <li><strong>Arquitetura:</strong> Orientada a Objetos</li>
+                        <li><strong>Modalidade:</strong> Mobilidade Urbana</li>
+                    </ul>
                 </div>
+            </div>
 
-                <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-success btn-lg mr-2" id="submitButton">
-                        <i class="fas fa-save mr-2"></i>Cadastrar Veículo
-                    </button>
-                    <a asp-page="Index" class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-arrow-left mr-2"></i>Voltar para a Lista
-                    </a>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Futuro do Wheels</h5>
+                    <p class="card-text">
+                        Estamos constantemente evoluindo nossa plataforma de <strong>mobilidade urbana</strong>. Em breve, novos recursos e funcionalidades serão implementados para melhorar ainda mais a experiência dos nossos usuários.
+                    </p>
+                    <small class="text-muted">
+                        Acompanhe nossas atualizações e seja parte da revolução da mobilidade urbana!
+                    </small>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<!-- Adicione Font Awesome para os ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<!-- Personalização de cores -->
+<style>
+    .text-primary {
+        color: #6d7883 !important;
     }
 
-    <script>
-        // Mostrar campos específicos conforme o tipo de veículo selecionado
-        document.getElementById('VehicleType').addEventListener('change', function() {
-            // Hide all specific fields first
-            document.querySelectorAll('.vehicle-specific').forEach(el => {
-                el.style.display = 'none';
-            });
-
-            // Show fields for selected type
-            if (this.value === 'Car') {
-                document.getElementById('carFields').style.display = 'block';
-            } else if (this.value === 'Motorcycle') {
-                document.getElementById('motorcycleFields').style.display = 'block';
-            } else if (this.value === 'Bicycle') {
-                document.getElementById('bicycleFields').style.display = 'block';
-            }
-        });
-
-        // Pré-visualização da imagem via URL
-        $("input[name='ImagemUri']").on('input', function() {
-            var url = $(this).val();
-            if (url && url.match(/\.(jpeg|jpg|gif|png)$/i) != null) {
-                $('#previewImage').attr('src', url);
-                $('#imagePreview').show();
-            } else {
-                $('#imagePreview').hide();
-            }
-        });
-
-        // Feedback visual durante o envio do formulário
-        $('#vehicleForm').on('submit', function() {
-            var submitBtn = $('#submitButton');
-            submitBtn.prop('disabled', true);
-            submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i>Cadastrando...');
-
-            // Reabilitar o botão após 10 segundos como segurança
-            setTimeout(function() {
-                submitBtn.prop('disabled', false);
-                submitBtn.html('<i class="fas fa-save mr-2"></i>Cadastrar Veículo');
-            }, 10000);
-        });
-
-        // Auto-hide alerts após 5 segundos
-        setTimeout(function() {
-            $('.alert').fadeOut(500);
-        }, 5000);
-    </script>
-
-    <style>
-        .card {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 1.25rem 1.5rem;
-        }
-
-        .form-control-lg {
-            height: calc(2.5em + .75rem + 2px);
-        }
-
-        .vehicle-specific {
-            background-color: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-
-        .btn-lg {
-            padding: .5rem 1.5rem;
-            font-size: 1.1rem;
-        }
-
-        .alert {
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-left: 4px solid #28a745;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-left: 4px solid #dc3545;
-        }
-
-        .alert i {
-            color: inherit;
-        }
-
-        .text-muted {
-            font-size: 0.875em;
-            font-style: italic;
-        }
-
-        label small.text-muted {
-            font-weight: normal;
-        }
-    </style>
-}
+    .border-primary {
+        border-color: #6d7883 !important;
+    }
+</style>

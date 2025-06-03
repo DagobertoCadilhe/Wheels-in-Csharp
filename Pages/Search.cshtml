@@ -1,0 +1,25 @@
+﻿@page
+@using Wheels_in_CSharp.Pages;
+@model SearchModel
+@{
+    ViewData["Title"] = "Veículos Disponíveis";
+}
+
+<div class="row justify-content-md-center">
+    @foreach (var vehicle in Model.Vehicles)
+    {
+        <div class="card col-3 m-3">
+            <img src="@vehicle.ImagemUri" class="p-3" style="border-radius: 25px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
+            <div class="card-body">
+                <h5 class="card-title">@vehicle.Model</h5>
+                <p class="card-text">
+                    Ano: @vehicle.Year | @vehicle.HourlyRate.ToString("C")/hora<br>
+                    Status: <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">@vehicle.Status.ToString()</span>
+                </p>
+                <a class="btn btn-primary" asp-page="/Details"
+                   asp-route-slug="@vehicle.NomeSlug"
+                   asp-route-id="@vehicle.Id">Ver mais</a>
+            </div>
+        </div>
+    }
+</div>

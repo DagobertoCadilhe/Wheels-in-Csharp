@@ -2,24 +2,248 @@
 @using Wheels_in_CSharp.Pages;
 @model IndexModel
 @{
-    ViewData["Title"] = "Veículos Disponíveis";
+    ViewData["Title"] = "Wheels - Mobilidade Urbana Inteligente";
 }
 
-<div class="row justify-content-md-center">
-    @foreach (var vehicle in Model.Vehicles)
-    {
-        <div class="card col-3 m-3">
-            <img src="@vehicle.ImagemUri" class="p-3" style="border-radius: 25px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
-            <div class="card-body">
-                <h5 class="card-title">@vehicle.Model</h5>
-                <p class="card-text">
-                    Ano: @vehicle.Year | @vehicle.HourlyRate.ToString("C")/hora<br>
-                    Status: <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">@vehicle.Status.ToString()</span>
+<!-- Hero Section -->
+<div class="hero-section py-5 mb-5" style="background-color: #f0f2f5;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 text-dark mb-4">Mobilidade urbana reinventada</h1>
+                <p class="lead mb-4 text-secondary">
+                    Conectamos você às melhores opções de transporte urbano. Bicicletas, carros e motos à disposição quando você precisa.
                 </p>
-                <a class="btn btn-primary" asp-page="/Details"
-                   asp-route-slug="@vehicle.NomeSlug"
-                   asp-route-id="@vehicle.Id">Ver mais</a>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="#veiculos-destaque" class="btn btn-primary btn-lg">Alugue Agora</a>
+                    <a href="/AboutUs" class="btn btn-outline-secondary btn-lg">Conheça a Wheels</a>
+                </div>
             </div>
         </div>
-    }
+    </div>
 </div>
+
+<!-- Destaques -->
+<div class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-bolt fa-2x"></i>
+                    </div>
+                    <h3>Rápido</h3>
+                    <p class="text-muted">Reserva instantânea e liberação imediata do veículo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-leaf fa-2x"></i>
+                    </div>
+                    <h3>Sustentável</h3>
+                    <p class="text-muted">Contribua para um trânsito mais limpo e eficiente.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-shield-alt fa-2x"></i>
+                    </div>
+                    <h3>Seguro</h3>
+                    <p class="text-muted">Todos os veículos com manutenção em dia e seguro incluso.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Veículos em Destaque -->
+<div class="container mb-5" id="veiculos-destaque">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center display-5 mb-3">Nossos Veículos</h2>
+            <p class="text-center text-muted">Escolha o que melhor atende sua necessidade</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        @foreach (var vehicle in Model.Vehicles.Take(4))
+        {
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="@vehicle.ImagemUri" class="card-img-top p-3" style="border-radius: 15px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
+                    <div class="card-body">
+                        <h5 class="card-title">@vehicle.Model</h5>
+                        <p class="card-text">
+                            <small class="text-muted">Ano: @vehicle.Year</small><br>
+                            <strong class="text-dark">@vehicle.HourlyRate.ToString("C")/hora</strong>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">
+                                @vehicle.Status.ToString()
+                            </span>
+                            <a class="btn btn-sm btn-primary" asp-page="/Details"
+                               asp-route-slug="@vehicle.NomeSlug"
+                               asp-route-id="@vehicle.Id">
+                                Detalhes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <a class="nav-link text-center mt-4" asp-page="/Search">
+        <i class="btn btn-outline-primary">Ver Todos os Veículos</i>
+    </a>
+</div>
+
+<!-- Sobre a Plataforma -->
+<div class="py-5 mb-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="text-dark mb-4">Tecnologia Wheels</h2>
+                <p class="lead text-secondary">
+                    Desenvolvida com C# .NET, nossa plataforma oferece a melhor experiência em aluguel de veículos urbanos.
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Sistema de gerenciamento inteligente</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Cálculo automático de preços</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Rastreamento em tempo real</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Interface intuitiva e responsiva</li>
+                </ul>
+                <a href="/AboutUs" class="btn btn-primary mt-3">Saiba mais sobre nós</a>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">Projeto Acadêmico</h5>
+                        <p class="card-text text-secondary">
+                            O Wheels é um projeto desenvolvido no <strong>Instituto Infnet</strong> como parte do curso de Graduação em Engenharia de Computação.
+                        </p>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Tecnologia</h6>
+                                <p class="mb-0 text-dark">C# .NET</p>
+                            </div>
+                            <div>
+                                <h6 class="text-muted">Arquitetura</h6>
+                                <p class="mb-0 text-dark">Orientada a Objetos</p>
+                            </div>
+                            <div>
+                                <h6 class="text-muted">Modalidade</h6>
+                                <p class="mb-0 text-dark">Mobilidade Urbana</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Como Funciona -->
+<div class="container mb-5">
+    <h2 class="text-center mb-5">Como Funciona</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-search fa-2x"></i>
+                    </div>
+                    <h5 class="">1. Escolha</h5>
+                    <p class="text-muted">Selecione o veículo ideal para sua necessidade</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <h5 class="">2. Reserve</h5>
+                    <p class="text-muted">Agende o período de uso do veículo</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-road fa-2x"></i>
+                    </div>
+                    <h5 class="">3. Aproveite</h5>
+                    <p class="text-muted">Retire o veículo e boa viagem!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Futuro do Wheels -->
+<div class="container mb-5">
+    <div class="card border-0 shadow" style="background-color: #f8f9fa; border-radius: 15px;">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3 class="mb-3">Futuro do Wheels</h3>
+                    <p class="mb-0 text-secondary">
+                        Estamos constantemente evoluindo nossa plataforma de <strong>mobilidade urbana</strong>. Em breve, novos recursos e funcionalidades serão implementados para melhorar ainda mais a experiência dos nossos usuários.
+                    </p>
+                    <p class="mt-2 mb-0 text-muted" style="font-style: italic;">
+                        Acompanhe nossas atualizações e seja parte da revolução da mobilidade urbana!
+                    </p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <i class="fas fa-rocket fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adicione Font Awesome para os ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<!-- Estilos personalizados -->
+<style>
+    .hero-section {
+        border-radius: 0 0 20px 20px;
+    }
+
+    .text-primary {
+        color: #6d7883 !important;
+    }
+
+    .btn-primary {
+        background-color: #6d7883;
+        border-color: #6d7883;
+    }
+
+        .btn-primary:hover {
+            background-color: #5a6775;
+            border-color: #5a6775;
+        }
+
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+</style>
