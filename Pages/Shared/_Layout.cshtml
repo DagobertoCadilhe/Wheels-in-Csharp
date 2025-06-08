@@ -13,7 +13,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" asp-page="/Index">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-car-front-fill"></i> Wheels System
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -22,47 +22,85 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/AboutUs">
-                                <i class="bi bi-search"></i> Quem Somos
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">
+                                <i class="bi bi-info-circle"></i> Quem Somos
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Search">
+                            <a class="nav-link" asp-area="" asp-controller="Vehicles" asp-action="Search">
                                 <i class="bi bi-search"></i> Buscar Veículos
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Rentals/Index">
-                                <i class="bi bi-calendar-check"></i> Meus Aluguéis
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-gear"></i> Administração
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-page="/Admin/Vehicles/Index">Gerenciar Veículos</a></li>
-                                <li><a class="dropdown-item" asp-page="/Create">Adicionar Veículos</a></li>
-                                <li><a class="dropdown-item" asp-page="/Admin/Users/Index">Gerenciar Usuários</a></li>
-                                <li><a class="dropdown-item" asp-page="/Admin/Reports/Index">Relatórios</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-page="/Admin/FleetStatus">Status da Frota</a></li>
-                            </ul>
-                        </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Rentals" asp-action="Index">
+                                    <i class="bi bi-calendar-check"></i> Meus Aluguéis
+                                </a>
+                            </li>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-gear"></i> Administração
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-page="/Admin/Vehicles">Gerenciar Veículos</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Vehicles/Create">Adicionar Veículos</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/Users">Gerenciar Usuários</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/Reports">Relatórios</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/FleetStatus">Status da Frota</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        }
                     </ul>
+
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Account/Profile">
-                                <i class="bi bi-person-circle"></i> Minha Conta
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <form class="form-inline" asp-page="/Account/Logout" method="post">
-                                <button type="submit" class="btn btn-link nav-link">
-                                    <i class="bi bi-box-arrow-right"></i> Sair
-                                </button>
-                            </form>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Profile">
+                                            <i class="bi bi-person-gear"></i> Minha Conta
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword">
+                                            <i class="bi bi-key"></i> Alterar Senha
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                            <button type="submit" class="btn btn-link p-0 text-start w-100 text-decoration-none text-dark">
+                                                <i class="bi bi-box-arrow-right"></i> Sair
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Entrar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
+                                    <i class="bi bi-person-plus"></i> Registrar
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -71,21 +109,47 @@
 
     <div class="container">
         <main role="main" class="pb-3 mt-4">
+            <!-- Alertas de notificação -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["InfoMessage"] != null)
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle"></i> @TempData["InfoMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-light">
+    <footer class="border-top footer text-muted bg-light mt-5">
         <div class="container py-3">
             <div class="row">
                 <div class="col-md-6">
-                    &copy; 2025 - Wheels System - <a asp-page="/Privacy">Política de Privacidade</a>
+                    &copy; 2025 - Wheels System -
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidade</a>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="#" class="text-muted me-3"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-muted me-3"><i class="bi bi-twitter"></i></a>
-                    <a href="#" class="text-muted me-3"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-muted"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-muted me-3" title="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-muted me-3" title="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-muted me-3" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-muted" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
         </div>
@@ -94,6 +158,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

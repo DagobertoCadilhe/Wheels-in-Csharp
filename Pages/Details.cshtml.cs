@@ -1,22 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Wheels_in_Csharp.Models;
-using Wheels_in_Csharp.Services.Memory;
+using Wheels_in_Csharp.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace Wheels_in_Csharp.Pages
 {
     public class DetailsModel : PageModel
     {
-        private IVehicleService _service;
+        private readonly IVehicleService _vehicleService;
+
         public Vehicle Vehicle { get; set; }
 
         public DetailsModel(IVehicleService vehicleService)
         {
-            _service = vehicleService;
+            _vehicleService = vehicleService;
         }
 
-        public void OnGet(int id)
+        public async Task OnGetAsync(int id)
         {
-            Vehicle = _service.Obter(id);
+            Vehicle = await _vehicleService.GetVehicleByIdAsync(id);
         }
 
         // Métodos auxiliares para a view

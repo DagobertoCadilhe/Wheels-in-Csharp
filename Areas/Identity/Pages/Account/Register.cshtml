@@ -1,0 +1,80 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Criar Conta";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="nome@exemplo.com" />
+                            <label asp-for="Input.Email">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.FullName" class="form-control" aria-required="true" placeholder="Nome Completo" />
+                            <label asp-for="Input.FullName">Nome Completo</label>
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.CPF" class="form-control" aria-required="true" placeholder="00000000000" maxlength="11"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                            <label asp-for="Input.CPF">CPF (somente números)</label>
+                            <span asp-validation-for="Input.CPF" class="text-danger"></span>
+                            <div class="form-text">Digite apenas os números do CPF (11 dígitos)</div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Input.Address" class="form-control" aria-required="true" placeholder="Endereço completo" style="height: 80px"></textarea>
+                            <label asp-for="Input.Address">Endereço Completo</label>
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                            <div class="form-text">Inclua rua, número, bairro, cidade e CEP</div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="senha" />
+                            <label asp-for="Input.Password">Senha</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="confirmar senha" />
+                            <label asp-for="Input.ConfirmPassword">Confirmar Senha</label>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="Input.IsAdmin" class="form-check-input" />
+                            <label asp-for="Input.IsAdmin" class="form-check-label">Registrar como Administrador</label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Criar Conta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <p>Já tem uma conta? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Fazer login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

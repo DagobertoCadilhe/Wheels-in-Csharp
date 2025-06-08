@@ -57,7 +57,7 @@
 
                         <!-- URL da Imagem -->
                         <div class="form-group">
-                            <label class="control-label font-weight-bold">URL da Imagem do Veículo</label>
+                            <label asp-for="ImagemUri" class="control-label font-weight-bold">URL da Imagem do Veículo</label>
                             <input asp-for="ImagemUri" class="form-control"
                                    placeholder="https://exemplo.com/imagem.jpg" />
                             <div class="mt-2" id="imagePreview" style="display: none;">
@@ -99,7 +99,7 @@
 
                         <div class="form-group">
                             <label asp-for="LastMaintenance" class="control-label font-weight-bold">Última Manutenção</label>
-                            <input asp-for="LastMaintenance" type="month" class="form-control" />
+                            <input asp-for="LastMaintenance" type="date" class="form-control" />
                             <span asp-validation-for="LastMaintenance" class="text-danger"></span>
                         </div>
 
@@ -107,6 +107,31 @@
                             <label asp-for="Status" class="control-label font-weight-bold">Status</label>
                             <select asp-for="Status" asp-items="Model.StatusList" class="form-control"></select>
                             <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos Opcionais -->
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CurrentLocation" class="control-label font-weight-bold">Localização Atual</label>
+                            <input asp-for="CurrentLocation" class="form-control" placeholder="Ex: Garagem Central" />
+                            <span asp-validation-for="CurrentLocation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Mileage" class="control-label font-weight-bold">Quilometragem</label>
+                            <input asp-for="Mileage" class="form-control" type="number" placeholder="Ex: 15000" />
+                            <span asp-validation-for="Mileage" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Color" class="control-label font-weight-bold">Cor</label>
+                            <input asp-for="Color" class="form-control" placeholder="Ex: Branco" />
+                            <span asp-validation-for="Color" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -119,29 +144,42 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="Car.FuelType" class="control-label">Tipo de Combustível</label>
-                                    <input asp-for="Car.FuelType" class="form-control" placeholder="Gasolina, Álcool, etc." />
-                                    <span asp-validation-for="Car.FuelType" class="text-danger"></span>
+                                    <label asp-for="FuelType" class="control-label">Tipo de Combustível</label>
+                                    <select asp-for="FuelType" class="form-control">
+                                        <option value="">Selecione</option>
+                                        <option value="Gasolina">Gasolina</option>
+                                        <option value="Álcool">Álcool</option>
+                                        <option value="Flex">Flex</option>
+                                        <option value="Diesel">Diesel</option>
+                                        <option value="Elétrico">Elétrico</option>
+                                        <option value="Híbrido">Híbrido</option>
+                                    </select>
+                                    <span asp-validation-for="FuelType" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="Car.Seats" class="control-label">Número de Assentos</label>
-                                    <input asp-for="Car.Seats" class="form-control" type="number" min="1" />
-                                    <span asp-validation-for="Car.Seats" class="text-danger"></span>
+                                    <label asp-for="Seats" class="control-label">Número de Assentos</label>
+                                    <input asp-for="Seats" class="form-control" type="number" min="1" max="8" />
+                                    <span asp-validation-for="Seats" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="Car.Transmission" class="control-label">Transmissão</label>
-                                    <input asp-for="Car.Transmission" class="form-control" placeholder="Automático ou Manual" />
-                                    <span asp-validation-for="Car.Transmission" class="text-danger"></span>
+                                    <label asp-for="Transmission" class="control-label">Transmissão</label>
+                                    <select asp-for="Transmission" class="form-control">
+                                        <option value="">Selecione</option>
+                                        <option value="Manual">Manual</option>
+                                        <option value="Automático">Automático</option>
+                                        <option value="CVT">CVT</option>
+                                    </select>
+                                    <span asp-validation-for="Transmission" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Car.HasAC" />
-                            <label class="form-check-label" asp-for="Car.HasAC">Possui Ar Condicionado</label>
+                            <input class="form-check-input" asp-for="HasAC" />
+                            <label class="form-check-label" asp-for="HasAC">Possui Ar Condicionado</label>
                         </div>
                     </div>
 
@@ -151,15 +189,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="Motorcycle.EngineCapacity" class="control-label">Cilindrada (cc)</label>
-                                    <input asp-for="Motorcycle.EngineCapacity" class="form-control" type="number" min="50" />
-                                    <span asp-validation-for="Motorcycle.EngineCapacity" class="text-danger"></span>
+                                    <label asp-for="EngineCapacity" class="control-label">Cilindrada (cc)</label>
+                                    <input asp-for="EngineCapacity" class="form-control" type="number" min="50" max="2000" placeholder="Ex: 150" />
+                                    <span asp-validation-for="EngineCapacity" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Motorcycle.HasHelmet" />
-                            <label class="form-check-label" asp-for="Motorcycle.HasHelmet">Inclui Capacete</label>
+                            <input class="form-check-input" asp-for="HasHelmet" />
+                            <label class="form-check-label" asp-for="HasHelmet">Inclui Capacete</label>
                         </div>
                     </div>
 
@@ -169,19 +207,27 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="Bicycle.BikeType" class="control-label">Tipo de Bicicleta</label>
-                                    <input asp-for="Bicycle.BikeType" class="form-control" placeholder="Ex: Mountain Bike" />
-                                    <span asp-validation-for="Bicycle.BikeType" class="text-danger"></span>
+                                    <label asp-for="BikeType" class="control-label">Tipo de Bicicleta</label>
+                                    <select asp-for="BikeType" class="form-control">
+                                        <option value="">Selecione</option>
+                                        <option value="Mountain Bike">Mountain Bike</option>
+                                        <option value="Speed">Speed</option>
+                                        <option value="Urbana">Urbana</option>
+                                        <option value="Elétrica">Elétrica</option>
+                                        <option value="BMX">BMX</option>
+                                        <option value="Dobrável">Dobrável</option>
+                                    </select>
+                                    <span asp-validation-for="BikeType" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Bicycle.HasHelmet" />
-                            <label class="form-check-label" asp-for="Bicycle.HasHelmet">Inclui Capacete</label>
+                        <div class="form-check form-check-inline mr-4">
+                            <input class="form-check-input" asp-for="HasHelmet" />
+                            <label class="form-check-label" asp-for="HasHelmet">Inclui Capacete</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" asp-for="Bicycle.HasLock" />
-                            <label class="form-check-label" asp-for="Bicycle.HasLock">Inclui Cadeado</label>
+                            <input class="form-check-input" asp-for="HasLock" />
+                            <label class="form-check-label" asp-for="HasLock">Inclui Cadeado</label>
                         </div>
                     </div>
                 </div>
@@ -223,33 +269,53 @@
         });
 
         // Pré-visualização da imagem via URL
-        $("input[name='ImagemUri']").on('input', function() {
-            var url = $(this).val();
+        document.querySelector("input[name='ImagemUri']").addEventListener('input', function() {
+            var url = this.value;
+            var imagePreview = document.getElementById('imagePreview');
+            var previewImage = document.getElementById('previewImage');
+
             if (url && url.match(/\.(jpeg|jpg|gif|png)$/i) != null) {
-                $('#previewImage').attr('src', url);
-                $('#imagePreview').show();
+                previewImage.src = url;
+                imagePreview.style.display = 'block';
             } else {
-                $('#imagePreview').hide();
+                imagePreview.style.display = 'none';
             }
         });
 
         // Feedback visual durante o envio do formulário
-        $('#vehicleForm').on('submit', function() {
-            var submitBtn = $('#submitButton');
-            submitBtn.prop('disabled', true);
-            submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i>Cadastrando...');
+        document.getElementById('vehicleForm').addEventListener('submit', function() {
+            var submitBtn = document.getElementById('submitButton');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Cadastrando...';
 
             // Reabilitar o botão após 10 segundos como segurança
             setTimeout(function() {
-                submitBtn.prop('disabled', false);
-                submitBtn.html('<i class="fas fa-save mr-2"></i>Cadastrar Veículo');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Cadastrar Veículo';
             }, 10000);
         });
 
         // Auto-hide alerts após 5 segundos
         setTimeout(function() {
-            $('.alert').fadeOut(500);
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 500);
+            });
         }, 5000);
+
+        // Trigger change event on page load if there's a selected value
+        document.addEventListener('DOMContentLoaded', function() {
+            var vehicleTypeSelect = document.getElementById('VehicleType');
+            if (vehicleTypeSelect.value) {
+                vehicleTypeSelect.dispatchEvent(new Event('change'));
+            }
+        });
     </script>
 
     <style>
@@ -271,6 +337,7 @@
             padding: 1.5rem;
             border-radius: 8px;
             margin-top: 1rem;
+            border: 1px solid #e9ecef;
         }
 
         .btn-lg {
@@ -299,6 +366,19 @@
 
         .alert i {
             color: inherit;
+        }
+
+        .form-check-inline {
+            margin-right: 1rem;
+        }
+
+        .border-bottom {
+            border-color: #dee2e6 !important;
+        }
+
+        h4 {
+            color: #495057;
+            font-weight: 600;
         }
     </style>
 }

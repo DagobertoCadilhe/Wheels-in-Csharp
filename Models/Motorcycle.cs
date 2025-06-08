@@ -1,6 +1,4 @@
-﻿using Wheels_in_Csharp.Models;
-
-namespace Wheels_in_Csharp.Models
+﻿namespace Wheels_in_Csharp.Models
 {
     public class Motorcycle : Vehicle
     {
