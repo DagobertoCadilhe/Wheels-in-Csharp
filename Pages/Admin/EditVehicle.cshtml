@@ -1,0 +1,174 @@
+﻿@page "{id:int}"
+@using Wheels_in_Csharp.Models
+@model Wheels_in_Csharp.Pages.Admin.EditVehicleModel
+@{
+    ViewData["Title"] = "Editar Veículo";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="bi bi-pencil-square"></i> @ViewData["Title"]</h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="VehicleEdit.Id" />
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Informações Básicas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.Model" class="form-label"></label>
+                                <input asp-for="VehicleEdit.Model" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.Model" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.Year" class="form-label"></label>
+                                <input asp-for="VehicleEdit.Year" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.Year" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.LicensePlate" class="form-label"></label>
+                                <input asp-for="VehicleEdit.LicensePlate" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.LicensePlate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.HourlyRate" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input asp-for="VehicleEdit.HourlyRate" class="form-control" />
+                                </div>
+                                <span asp-validation-for="VehicleEdit.HourlyRate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.Status" class="form-label"></label>
+                                <select asp-for="VehicleEdit.Status" class="form-select"
+                                        asp-items="Html.GetEnumSelectList<VehicleStatus>()">
+                                </select>
+                                <span asp-validation-for="VehicleEdit.Status" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.LastMaintenance" class="form-label"></label>
+                                <input asp-for="VehicleEdit.LastMaintenance" type="date" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.LastMaintenance" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="VehicleEdit.Description" class="form-label"></label>
+                                <textarea asp-for="VehicleEdit.Description" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="VehicleEdit.Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Imagem do Veículo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Imagem Atual</label>
+                                    <img src="@Model.VehicleEdit.ImagemUri" class="img-fluid rounded" style="max-height: 200px;">
+                                    <input type="hidden" asp-for="VehicleEdit.ImagemUri" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="VehicleEdit.NewImageUrl" class="form-label">Nova Imagem (URL)</label>
+                                    <input asp-for="VehicleEdit.NewImageUrl" class="form-control" placeholder="Cole a URL da nova imagem" />
+                                    <span asp-validation-for="VehicleEdit.NewImageUrl" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="ImageFile" class="form-label">Ou faça upload de uma imagem</label>
+                                    <input type="file" asp-for="ImageFile" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Informações Adicionais</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.CurrentLocation" class="form-label"></label>
+                                <input asp-for="VehicleEdit.CurrentLocation" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.CurrentLocation" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.Mileage" class="form-label"></label>
+                                <input asp-for="VehicleEdit.Mileage" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.Mileage" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="VehicleEdit.Color" class="form-label"></label>
+                                <input asp-for="VehicleEdit.Color" class="form-control" />
+                                <span asp-validation-for="VehicleEdit.Color" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Disponibilidade</label>
+                                <div class="form-check form-switch mt-2">
+                                    <input asp-for="VehicleEdit.Available" class="form-check-input" type="checkbox" role="switch">
+                                    <label asp-for="VehicleEdit.Available" class="form-check-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-page="./Vehicles" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Formata a data de manutenção para o input date
+            const lastMaintenanceInput = document.querySelector('input[name="VehicleEdit.LastMaintenance"]');
+            if (lastMaintenanceInput) {
+                const date = new Date('@Model.VehicleEdit.LastMaintenance.ToString("yyyy-MM-dd")');
+                lastMaintenanceInput.valueAsDate = date;
+            }
+
+            // Validação para imagem - pelo menos um método deve ser fornecido
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                const imageUrl = document.querySelector('input[name="VehicleEdit.NewImageUrl"]').value;
+                const imageFile = document.querySelector('input[name="ImageFile"]').files[0];
+                const currentImage = '@Model.VehicleEdit.ImagemUri';
+
+                if (!imageUrl && !imageFile && !currentImage) {
+                    e.preventDefault();
+                    alert('Por favor, forneça uma imagem (URL ou upload) ou mantenha a imagem atual.');
+                }
+            });
+        });
+    </script>
+}

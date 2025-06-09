@@ -40,6 +40,26 @@ namespace Wheels_in_Csharp.Services
             return await _userManager.Users.ToListAsync();
         }
 
+        public IQueryable<UserWithRoles> GetAllUsersQueryable()
+        {
+            var users = from user in _context.Users
+                        select new UserWithRoles
+                        {
+                            Id = user.Id,
+                            FullName = user.FullName,
+                            Email = user.Email,
+                            CPF = user.CPF,
+                            RegistrationDate = user.RegistrationDate,
+                            EmailConfirmed = user.EmailConfirmed,
+                            Roles = (from userRole in _context.UserRoles
+                                     join role in _context.Roles on userRole.RoleId equals role.Id
+                                     where userRole.UserId == user.Id
+                                     select role.Name).ToList()
+                        };
+
+            return users;
+        }
+
         public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);

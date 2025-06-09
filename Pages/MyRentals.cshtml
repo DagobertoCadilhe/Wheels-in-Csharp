@@ -1,0 +1,155 @@
+﻿@page
+@model Wheels_in_Csharp.Pages.MyRentalsModel
+@{
+    ViewData["Title"] = "Meus Aluguéis";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-history"></i> Meus Aluguéis
+                </h2>
+                <a href="/Rent" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Novo Aluguel
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @Model.ErrorMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle"></i> @Model.SuccessMessage
+        </div>
+    }
+
+    <!-- Lista de Aluguéis -->
+    <div class="row">
+        @foreach (var rental in Model.UserRentals)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">@rental.VehicleModel</h6>
+                        @{
+                            string statusClass = rental.Status switch
+                            {
+                                "ACTIVE" => "bg-success",
+                                "COMPLETED" => "bg-primary",
+                                "CANCELLED" => "bg-danger",
+                                _ => "bg-secondary"
+                            };
+
+                            string statusText = rental.Status switch
+                            {
+                                "ACTIVE" => "Ativo",
+                                "COMPLETED" => "Finalizado",
+                                "CANCELLED" => "Cancelado",
+                                _ => rental.Status
+                            };
+                        }
+                        <span class="badge @statusClass">@statusText</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt"></i> Período
+                            </small>
+                            <p class="mb-1">
+                                <strong>Início:</strong> @rental.StartDate.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                            <p class="mb-0">
+                                <strong>Fim:</strong> @rental.EndDate.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-money-bill-wave"></i> Valor
+                            </small>
+                            <p class="h5 text-success mb-0">R$ @rental.TotalCost.ToString("F2")</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i> Duração
+                            </small>
+                            @{
+                                var duration = rental.EndDate - rental.StartDate;
+                                var days = duration.Days;
+                                var hours = duration.Hours;
+                                var minutes = duration.Minutes;
+
+                                var durationText = "";
+                                if (days > 0) durationText += $"{days}d ";
+                                if (hours > 0) durationText += $"{hours}h ";
+                                if (minutes > 0) durationText += $"{minutes}min";
+                                if (string.IsNullOrEmpty(durationText)) durationText = "Menos de 1 min";
+                            }
+                            <p class="mb-0">@durationText</p>
+                        </div>
+
+                        @if (rental.CanBeReturned || rental.CanBeCanceled)
+                        {
+                            <div class="d-grid gap-2">
+                                @if (rental.CanBeReturned)
+                                {
+                                    <form method="post" asp-page-handler="CompleteRental">
+                                        <input type="hidden" name="rentalId" value="@rental.Id" />
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Devolver Veículo
+                                        </button>
+                                    </form>
+                                }
+
+                                @if (rental.CanBeCanceled)
+                                {
+                                    <form method="post" asp-page-handler="CancelRental">
+                                        <input type="hidden" name="rentalId" value="@rental.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i> Cancelar Aluguel
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            <i class="fas fa-hashtag"></i> Aluguel #@rental.Id
+                        </small>
+                        @if (rental.Status == "COMPLETED")
+                        {
+                            <small class="float-end">
+                                <i class="fas fa-check-circle text-success"></i> Concluído
+                            </small>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.UserRentals.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i>
+                Você ainda não possui nenhum aluguel.
+                <br>
+                <a href="/Rent" class="btn btn-primary mt-2">
+                    <i class="fas fa-plus"></i> Fazer Primeiro Aluguel
+                </a>
+            </div>
+        </div>
+    }
+</div>

@@ -32,10 +32,10 @@
         </div>
         
         <div class="col-md-4">
-            <!-- Card de reserva -->
+            <!-- Card de informações -->
             <div class="card shadow-sm sticky-top" style="top: 20px;">
                 <div class="card-body">
-                    <h3 class="card-title">Alugar este veículo</h3>
+                    <h3 class="card-title">Informações do Veículo</h3>
                     
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="mb-0 text-primary" style="color: #699e73 !important">@Html.DisplayFor(model => model.Vehicle.HourlyRate)/hora</h4>
@@ -46,23 +46,9 @@
                     
                     @if (Model.Vehicle.Status == VehicleStatus.AVAILABLE)
                     {
-                        <form method="post" asp-page-handler="Rent">
-                            <input type="hidden" asp-for="Vehicle.Id" />
-                            
-                            <div class="form-group mb-3">
-                                <label for="startDate">Data de Início</label>
-                                <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
-                            </div>
-                            
-                            <div class="form-group mb-3">
-                                <label for="endDate">Data de Término</label>
-                                <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                                Reservar Agora
-                            </button>
-                        </form>
+                        <a asp-page="/Rent" asp-route-vehicleId="@Model.Vehicle.Id" class="btn btn-primary btn-lg w-100 mb-3">
+                            Alugar este veículo
+                        </a>
                     }
                     else
                     {
@@ -207,25 +193,3 @@
         transform: scale(1.05);
     }
 </style>
-
-@section Scripts {
-    <script>
-        // Script para calcular o valor estimado quando as datas mudam
-        document.getElementById('startDate').addEventListener('change', calculateEstimate);
-        document.getElementById('endDate').addEventListener('change', calculateEstimate);
-        
-        function calculateEstimate() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
-            
-            if (startDate && endDate && startDate < endDate) {
-                const hours = (endDate - startDate) / (1000 * 60 * 60);
-                const rate = @Model.Vehicle.HourlyRate;
-                const total = rate * hours;
-                
-                // Atualizar algum elemento na página com o valor estimado
-                console.log(`Valor estimado: R$ ${total.toFixed(2)}`);
-            }
-        }
-    </script>
-}

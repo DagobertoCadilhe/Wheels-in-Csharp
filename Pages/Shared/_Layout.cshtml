@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WheelsSystem.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand" asp-page="/Index">
                     <i class="bi bi-car-front-fill"></i> Wheels System
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -22,22 +23,27 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">
+                            <a class="nav-link" asp-page="/AboutUs">
                                 <i class="bi bi-info-circle"></i> Quem Somos
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Vehicles" asp-action="Search">
-                                <i class="bi bi-search"></i> Buscar Veículos
-                            </a>
-                        </li>
-
+                        
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Rentals" asp-action="Index">
-                                    <i class="bi bi-calendar-check"></i> Meus Aluguéis
+                                <a class="nav-link" asp-page="/Vehicles/Search">
+                                    <i class="bi bi-search"></i> Buscar Veículos
                                 </a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="rentalDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-calendar-check"></i> Aluguéis
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-page="/MyRentals">Meus Aluguéis</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Rent">Novo Aluguel</a></li>
+                                </ul>
                             </li>
 
                             @if (User.IsInRole("Admin"))
@@ -48,11 +54,13 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" asp-page="/Admin/Vehicles">Gerenciar Veículos</a></li>
-                                        <li><a class="dropdown-item" asp-page="/Vehicles/Create">Adicionar Veículos</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Vehicles/Create">Adicionar Veículo</a></li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" asp-page="/Admin/Users">Gerenciar Usuários</a></li>
-                                        <li><a class="dropdown-item" asp-page="/Admin/Reports">Relatórios</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" asp-page="/Admin/FleetStatus">Status da Frota</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/RentalManagement">Gerenciar Aluguéis</a></li>
                                     </ul>
                                 </li>
                             }
@@ -77,9 +85,17 @@
                                             <i class="bi bi-key"></i> Alterar Senha
                                         </a>
                                     </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Admin/Settings">
+                                                <i class="bi bi-sliders"></i> Configurações
+                                            </a>
+                                        </li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index")">
                                             <button type="submit" class="btn btn-link p-0 text-start w-100 text-decoration-none text-dark">
                                                 <i class="bi bi-box-arrow-right"></i> Sair
                                             </button>
@@ -143,7 +159,8 @@
             <div class="row">
                 <div class="col-md-6">
                     &copy; 2025 - Wheels System -
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidade</a>
+                    <a asp-page="/Privacy">Política de Privacidade</a> |
+                    <a asp-page="/Terms">Termos de Uso</a>
                 </div>
                 <div class="col-md-6 text-end">
                     <a href="#" class="text-muted me-3" title="Facebook"><i class="bi bi-facebook"></i></a>
@@ -157,6 +174,8 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.pt-BR.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

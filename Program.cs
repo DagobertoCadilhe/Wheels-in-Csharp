@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using Wheels_in_Csharp.Data;
 using Wheels_in_Csharp.Models;
 using Wheels_in_Csharp.Services;
@@ -57,12 +58,24 @@ builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// Configuração do Razor Pages
+// Configuração do MVC e API Controllers
+builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Admin");
     options.Conventions.AllowAnonymousToPage("/Account/Login");
     options.Conventions.AllowAnonymousToPage("/Account/Register");
+});
+
+// Configuração do CORS (se necessário para API)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
 var app = builder.Build();
@@ -141,10 +154,37 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCookiePolicy();
+
+// Habilitar CORS (antes do UseRouting)
+app.UseCors("AllowAll");
+
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Mapeamento dos endpoints
+app.MapControllers();  // IMPORTANTE: Para habilitar os API Controllers
 app.MapRazorPages();
+
+// Endpoint para debug de rotas (opcional)
+app.MapGet("/debug/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
+{
+    var sb = new StringBuilder();
+    foreach (var endpointSource in endpointSources)
+    {
+        foreach (var endpoint in endpointSource.Endpoints)
+        {
+            if (endpoint is RouteEndpoint routeEndpoint)
+            {
+                sb.AppendLine($"{routeEndpoint.DisplayName}");
+                sb.AppendLine($"  Route: {routeEndpoint.RoutePattern.RawText}");
+                sb.AppendLine($"  HTTP Methods: {string.Join(", ", routeEndpoint.Metadata.GetOrderedMetadata<IHttpMethodMetadata>().SelectMany(m => m.HttpMethods))}");
+                sb.AppendLine();
+            }
+        }
+    }
+    return sb.ToString();
+});
 
 app.Run();

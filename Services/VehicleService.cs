@@ -89,5 +89,10 @@ namespace Wheels_in_Csharp.Services
 
             return vehicle.CalculateRentalCost(startDate, endDate);
         }
+
+        public IQueryable<Vehicle> GetAllVehiclesQueryable()
+        {
+            return _context.Vehicles.AsQueryable();
+        }
     }
 }

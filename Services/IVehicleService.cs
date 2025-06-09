@@ -14,6 +14,7 @@ namespace Wheels_in_Csharp.Services.Interfaces
         Task<Vehicle> AddVehicleAsync(Vehicle vehicle);
         Task UpdateVehicleAsync(Vehicle vehicle);
         Task DeleteVehicleAsync(int id);
+        IQueryable<Vehicle> GetAllVehiclesQueryable();
         Task UpdateVehicleStatusAsync(int vehicleId, VehicleStatus status);
         Task<bool> IsVehicleAvailableAsync(int vehicleId);
         Task<decimal> CalculateRentalCostAsync(int vehicleId, DateTime startDate, DateTime endDate);

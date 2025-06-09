@@ -38,6 +38,14 @@ namespace Wheels_in_Csharp.Services
                 .ToListAsync();
         }
 
+        public IQueryable<Rental> GetAllRentalsQueryable()
+        {
+            return _context.Rentals
+                .Include(r => r.Customer)
+                .Include(r => r.RentedVehicle)
+                .AsQueryable();
+        }
+
         public async Task<IEnumerable<Rental>> GetUserRentalsAsync(string userId)
         {
             return await _context.Rentals
@@ -58,19 +66,25 @@ namespace Wheels_in_Csharp.Services
 
         public async Task<Rental> CreateRentalAsync(Rental rental)
         {
-            if (!await _vehicleService.IsVehicleAvailableAsync(rental.VehicleId))
-                throw new InvalidOperationException("Vehicle is not available for rental");
+            if (rental.Id == 0) // New rental
+            {
+                if (!await IsVehicleAvailableForRentalAsync(rental.VehicleId, rental.StartTime, rental.EndTime))
+                    throw new InvalidOperationException("Vehicle is not available for the selected period");
 
-            rental.TotalCost = await _vehicleService.CalculateRentalCostAsync(
-                rental.VehicleId, rental.StartTime, rental.EndTime);
+                rental.TotalCost = await CalculateRentalCostAsync(
+                    rental.VehicleId, rental.StartTime, rental.EndTime);
 
-            rental.Status = RentalStatus.ACTIVE;
+                rental.Status = RentalStatus.ACTIVE;
+                await _vehicleService.UpdateVehicleStatusAsync(rental.VehicleId, VehicleStatus.RENTED);
 
-            await _vehicleService.UpdateVehicleStatusAsync(rental.VehicleId, VehicleStatus.RENTED);
+                _context.Rentals.Add(rental);
+            }
+            else // Existing rental
+            {
+                _context.Rentals.Update(rental);
+            }
 
-            _context.Rentals.Add(rental);
             await _context.SaveChangesAsync();
-
             return rental;
         }
 
@@ -79,9 +93,21 @@ namespace Wheels_in_Csharp.Services
             var rental = await GetRentalByIdAsync(rentalId);
             if (rental == null) throw new ArgumentException("Rental not found");
 
-            rental.Status = RentalStatus.COMPLETED;
-            await _vehicleService.UpdateVehicleStatusAsync(rental.VehicleId, VehicleStatus.AVAILABLE);
+            if (rental.Status != RentalStatus.ACTIVE)
+                throw new InvalidOperationException("Only active rentals can be completed");
 
+            rental.Status = RentalStatus.COMPLETED;
+
+            // MUDANÇA: Como não existe ActualEndTime, vamos usar EndTime como referência
+            // Se quiser registrar o momento exato da finalização, atualize o EndTime
+            rental.EndTime = DateTime.Now;
+
+            // Recalculate cost based on actual usage
+            var actualDuration = rental.EndTime - rental.StartTime;
+            var hoursUsed = (decimal)Math.Ceiling(actualDuration.TotalHours);
+            rental.TotalCost = hoursUsed * rental.RentedVehicle.HourlyRate;
+
+            await _vehicleService.UpdateVehicleStatusAsync(rental.VehicleId, VehicleStatus.AVAILABLE);
             await _context.SaveChangesAsync();
         }
 
@@ -89,6 +115,9 @@ namespace Wheels_in_Csharp.Services
         {
             var rental = await GetRentalByIdAsync(rentalId);
             if (rental == null) throw new ArgumentException("Rental not found");
+
+            if (rental.Status != RentalStatus.ACTIVE)
+                throw new InvalidOperationException("Only active rentals can be cancelled");
 
             rental.Status = RentalStatus.CANCELLED;
 
@@ -106,7 +135,11 @@ namespace Wheels_in_Csharp.Services
             if (rental == null) throw new ArgumentException("Rental not found");
             if (newEndDate <= rental.EndTime) throw new ArgumentException("New end date must be after current end date");
 
-            var additionalCost = await _vehicleService.CalculateRentalCostAsync(
+            // Check vehicle availability for extension period
+            if (!await IsVehicleAvailableForRentalAsync(rental.VehicleId, rental.EndTime, newEndDate, rentalId))
+                throw new InvalidOperationException("Vehicle not available for the extended period");
+
+            var additionalCost = await CalculateRentalCostAsync(
                 rental.VehicleId, rental.EndTime, newEndDate);
 
             rental.TotalCost += additionalCost;
@@ -115,22 +148,96 @@ namespace Wheels_in_Csharp.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> IsVehicleAvailableForRentalAsync(int vehicleId, DateTime startDate, DateTime endDate)
+        public async Task<bool> IsVehicleAvailableForRentalAsync(int vehicleId, DateTime startDate, DateTime endDate, int? excludeRentalId = null)
         {
             if (!await _vehicleService.IsVehicleAvailableAsync(vehicleId))
                 return false;
 
-            return !await _context.Rentals
-                .AnyAsync(r => r.VehicleId == vehicleId &&
-                               r.Status == RentalStatus.ACTIVE &&
-                               ((startDate >= r.StartTime && startDate < r.EndTime) ||
+            var query = _context.Rentals
+                .Where(r => r.VehicleId == vehicleId &&
+                           r.Status == RentalStatus.ACTIVE);
+
+            if (excludeRentalId.HasValue)
+            {
+                query = query.Where(r => r.Id != excludeRentalId.Value);
+            }
+
+            return !await query
+                .AnyAsync(r => (startDate >= r.StartTime && startDate < r.EndTime) ||
                                 (endDate > r.StartTime && endDate <= r.EndTime) ||
-                                (startDate <= r.StartTime && endDate >= r.EndTime)));
+                                (startDate <= r.StartTime && endDate >= r.EndTime));
         }
 
         public async Task<decimal> CalculateRentalCostAsync(int vehicleId, DateTime startDate, DateTime endDate)
         {
-            return await _vehicleService.CalculateRentalCostAsync(vehicleId, startDate, endDate);
+            var vehicle = await _vehicleService.GetVehicleByIdAsync(vehicleId);
+            if (vehicle == null) throw new ArgumentException("Vehicle not found");
+
+            var duration = endDate - startDate;
+            var hours = (decimal)Math.Ceiling(duration.TotalHours);
+            return hours * vehicle.HourlyRate;
+        }
+
+        public async Task<IEnumerable<Rental>> GetFilteredRentalsAsync(
+            string statusFilter = null,
+            DateTime? startDateFilter = null,
+            DateTime? endDateFilter = null,
+            int pageNumber = 1,
+            int pageSize = 10)
+        {
+            var query = GetAllRentalsQueryable();
+
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                if (Enum.TryParse<RentalStatus>(statusFilter, out var status))
+                {
+                    query = query.Where(r => r.Status == status);
+                }
+            }
+
+            if (startDateFilter.HasValue)
+            {
+                query = query.Where(r => r.StartTime >= startDateFilter.Value);
+            }
+
+            if (endDateFilter.HasValue)
+            {
+                query = query.Where(r => r.EndTime <= endDateFilter.Value);
+            }
+
+            return await query
+                .OrderByDescending(r => r.StartTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetRentalsCountAsync(
+            string statusFilter = null,
+            DateTime? startDateFilter = null,
+            DateTime? endDateFilter = null)
+        {
+            var query = _context.Rentals.AsQueryable();
+
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                if (Enum.TryParse<RentalStatus>(statusFilter, out var status))
+                {
+                    query = query.Where(r => r.Status == status);
+                }
+            }
+
+            if (startDateFilter.HasValue)
+            {
+                query = query.Where(r => r.StartTime >= startDateFilter.Value);
+            }
+
+            if (endDateFilter.HasValue)
+            {
+                query = query.Where(r => r.EndTime <= endDateFilter.Value);
+            }
+
+            return await query.CountAsync();
         }
     }
 }

@@ -1,0 +1,366 @@
+﻿@page
+@model Wheels_in_Csharp.Pages.RentModel
+@{
+    ViewData["Title"] = "Alugar Veículo";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">
+                <i class="fas fa-car"></i> Alugar Veículo
+            </h2>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Filtros</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="vehicleTypeFilter" class="form-label">Tipo de Veículo</label>
+                    <select id="vehicleTypeFilter" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="Car">Carros</option>
+                        <option value="Motorcycle">Motos</option>
+                        <option value="Bicycle">Bicicletas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="maxPriceFilter" class="form-label">Preço Máximo/Hora</label>
+                    <input type="number" id="maxPriceFilter" class="form-control" placeholder="R$ 0,00" step="0.01">
+                </div>
+                <div class="col-md-3">
+                    <label for="startDateFilter" class="form-label">Data de Início</label>
+                    <input type="datetime-local" id="startDateFilter" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label for="endDateFilter" class="form-label">Data de Fim</label>
+                    <input type="datetime-local" id="endDateFilter" class="form-control">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" onclick="filterVehicles()">
+                        <i class="fas fa-search"></i> Filtrar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Limpar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Veículos -->
+    <div class="row" id="vehiclesList">
+        @foreach (var vehicle in Model.AvailableVehicles)
+        {
+            <div class="col-md-6 col-lg-4 mb-4 vehicle-card"
+                 data-type="@vehicle.GetType().Name"
+                 data-price="@vehicle.HourlyRate">
+                <div class="card h-100">
+                    <img src="@vehicle.ImagemUri" class="card-img-top" alt="@vehicle.Model" style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@vehicle.Model (@vehicle.Year)</h5>
+                        <p class="card-text text-muted small">@vehicle.Description</p>
+
+                        <!-- Detalhes específicos por tipo -->
+                        @if (vehicle is Wheels_in_Csharp.Models.Car car)
+                        {
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-car"></i> @car.Seats lugares | @car.FuelType | @car.Transmission
+                                    @if (car.HasAC)
+                                    {
+                                        <span>| <i class="fas fa-snowflake"></i> Ar Condicionado</span>
+                                    }
+                                </small>
+                            </div>
+                        }
+                        @if (vehicle is Wheels_in_Csharp.Models.Motorcycle motorcycle)
+                        {
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-motorcycle"></i> @motorcycle.EngineCapacity cc
+                                    @if (motorcycle.HasHelmet)
+                                    {
+                                        <span>| <i class="fas fa-hard-hat"></i> Com Capacete</span>
+                                    }
+                                </small>
+                            </div>
+                        }
+                        @if (vehicle is Wheels_in_Csharp.Models.Bicycle bicycle)
+                        {
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-bicycle"></i> @bicycle.BikeType
+                                    @if (bicycle.HasHelmet)
+                                    {
+                                        <span>| <i class="fas fa-hard-hat"></i> Com Capacete</span>
+                                    }
+                                    @if (bicycle.HasLock)
+                                    {
+                                        <span>| <i class="fas fa-lock"></i> Com Trava</span>
+                                    }
+                                </small>
+                            </div>
+                        }
+
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i> @(vehicle.CurrentLocation ?? "Localização não informada")
+                            </small>
+                        </div>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="h5 text-success mb-0">R$ @vehicle.HourlyRate.ToString("F2")/hora</span>
+                                <span class="badge bg-success">Disponível</span>
+                            </div>
+
+                            <button type="button" class="btn btn-primary w-100"
+                                    onclick="selectVehicle(@vehicle.Id, '@vehicle.Model', @vehicle.HourlyRate)">
+                                <i class="fas fa-calendar-plus"></i> Alugar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.AvailableVehicles.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i>
+                Nenhum veículo disponível no momento.
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal de Aluguel -->
+<div class="modal fade" id="rentalModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Aluguel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="rentalForm">
+                    <input type="hidden" id="selectedVehicleId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Veículo Selecionado</label>
+                        <input type="text" id="selectedVehicleName" class="form-control" readonly>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="startDateTime" class="form-label">Data/Hora Início *</label>
+                            <input type="datetime-local" id="startDateTime" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDateTime" class="form-label">Data/Hora Fim *</label>
+                            <input type="datetime-local" id="endDateTime" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Valor por hora:</span>
+                            <span id="hourlyRateDisplay">R$ 0,00</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Total estimado:</span>
+                            <span id="totalCostDisplay" class="fw-bold text-success">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <small>
+                            <i class="fas fa-info-circle"></i>
+                            O valor final será calculado com base no tempo real de uso.
+                        </small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="confirmRental()">
+                    <i class="fas fa-check"></i> Confirmar Aluguel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Processando aluguel...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let selectedVehicle = null;
+
+        function selectVehicle(vehicleId, vehicleName, hourlyRate) {
+            selectedVehicle = {
+                id: vehicleId,
+                name: vehicleName,
+                hourlyRate: hourlyRate
+            };
+
+            document.getElementById('selectedVehicleId').value = vehicleId;
+            document.getElementById('selectedVehicleName').value = vehicleName;
+            document.getElementById('hourlyRateDisplay').textContent = `R$ ${hourlyRate.toFixed(2)}`;
+
+            // Definir data/hora mínima como agora
+            const now = new Date();
+            const isoString = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('startDateTime').min = isoString;
+            document.getElementById('startDateTime').value = isoString;
+
+            // Definir data fim padrão (2 horas depois)
+            const endTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+            const endIsoString = new Date(endTime.getTime() - endTime.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('endDateTime').value = endIsoString;
+
+            calculateCost();
+
+            const modal = new bootstrap.Modal(document.getElementById('rentalModal'));
+            modal.show();
+        }
+
+        function calculateCost() {
+            const startDateTime = document.getElementById('startDateTime').value;
+            const endDateTime = document.getElementById('endDateTime').value;
+
+            if (startDateTime && endDateTime && selectedVehicle) {
+                const start = new Date(startDateTime);
+                const end = new Date(endDateTime);
+
+                if (end > start) {
+                    const hours = (end - start) / (1000 * 60 * 60);
+                    const totalCost = hours * selectedVehicle.hourlyRate;
+                    document.getElementById('totalCostDisplay').textContent = `R$ ${totalCost.toFixed(2)}`;
+                } else {
+                    document.getElementById('totalCostDisplay').textContent = 'R$ 0,00';
+                }
+            }
+        }
+
+        async function confirmRental() {
+            const startDateTime = document.getElementById('startDateTime').value;
+            const endDateTime = document.getElementById('endDateTime').value;
+            const vehicleId = document.getElementById('selectedVehicleId').value;
+
+            if (!startDateTime || !endDateTime || !vehicleId) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            const start = new Date(startDateTime);
+            const end = new Date(endDateTime);
+
+            if (end <= start) {
+                alert('A data de fim deve ser posterior à data de início.');
+                return;
+            }
+
+            // Mostrar loading
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            loadingModal.show();
+
+            try {
+                const response = await fetch('/api/rental/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({
+                        vehicleId: parseInt(vehicleId),
+                        startDate: start.toISOString(),
+                        endDate: end.toISOString()
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erro ao criar aluguel');
+                }
+
+                const result = await response.json();
+
+                loadingModal.hide();
+                bootstrap.Modal.getInstance(document.getElementById('rentalModal')).hide();
+
+                alert('Aluguel criado com sucesso! Redirecionando para seus aluguéis...');
+                window.location.href = '/MyRentals';
+
+            } catch (error) {
+                loadingModal.hide();
+                console.error('Erro completo:', error);
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        function filterVehicles() {
+            const typeFilter = document.getElementById('vehicleTypeFilter').value;
+            const maxPriceFilter = parseFloat(document.getElementById('maxPriceFilter').value) || Infinity;
+            const cards = document.querySelectorAll('.vehicle-card');
+
+            cards.forEach(card => {
+                const cardType = card.dataset.type;
+                const cardPrice = parseFloat(card.dataset.price);
+
+                const typeMatch = !typeFilter || cardType === typeFilter;
+                const priceMatch = cardPrice <= maxPriceFilter;
+
+                if (typeMatch && priceMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function clearFilters() {
+            document.getElementById('vehicleTypeFilter').value = '';
+            document.getElementById('maxPriceFilter').value = '';
+            document.getElementById('startDateFilter').value = '';
+            document.getElementById('endDateFilter').value = '';
+
+            const cards = document.querySelectorAll('.vehicle-card');
+            cards.forEach(card => {
+                card.style.display = 'block';
+            });
+        }
+
+        // Event listeners
+        document.getElementById('startDateTime').addEventListener('change', calculateCost);
+        document.getElementById('endDateTime').addEventListener('change', calculateCost);
+
+        // Atualizar data fim mínima quando data início mudar
+        document.getElementById('startDateTime').addEventListener('change', function() {
+            const startValue = this.value;
+            if (startValue) {
+                document.getElementById('endDateTime').min = startValue;
+            }
+        });
+    </script>
+}
