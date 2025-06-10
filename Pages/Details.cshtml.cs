@@ -21,7 +21,6 @@ namespace Wheels_in_Csharp.Pages
             Vehicle = await _vehicleService.GetVehicleByIdAsync(id);
         }
 
-        // Métodos auxiliares para a view
         public string GetStatusBadgeClass(VehicleStatus status)
         {
             return status switch

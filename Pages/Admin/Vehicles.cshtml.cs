@@ -19,7 +19,6 @@ namespace Wheels_in_Csharp.Pages.Admin
             _logger = logger;
         }
 
-        // Filtros
         [BindProperty(SupportsGet = true)]
         public string ModelFilter { get; set; }
 
@@ -29,13 +28,11 @@ namespace Wheels_in_Csharp.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public string StatusFilter { get; set; }
 
-        // Paginação
         [BindProperty(SupportsGet = true)]
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
         public const int PageSize = 10;
 
-        // Lista de veículos
         public List<Vehicle> Vehicles { get; set; } = new();
 
         public async Task OnGetAsync()
@@ -44,7 +41,6 @@ namespace Wheels_in_Csharp.Pages.Admin
             {
                 var vehiclesQuery = _vehicleService.GetAllVehiclesQueryable();
 
-                // Aplicar filtros
                 if (!string.IsNullOrEmpty(ModelFilter))
                 {
                     vehiclesQuery = vehiclesQuery.Where(v => v.Model.Contains(ModelFilter));
@@ -61,7 +57,6 @@ namespace Wheels_in_Csharp.Pages.Admin
                     vehiclesQuery = vehiclesQuery.Where(v => v.Status == status);
                 }
 
-                // Paginação
                 var totalItems = await vehiclesQuery.CountAsync();
                 TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
 

@@ -11,7 +11,7 @@ namespace Wheels_in_Csharp.Services.Interfaces
         Task<ApplicationUser> GetUserByIdAsync(string id);
         Task<ApplicationUser> GetUserByEmailAsync(string email);
         Task<IEnumerable<ApplicationUser>> GetAllUsersAsync();
-        IQueryable<UserWithRoles> GetAllUsersQueryable(); // Método adicionado
+        IQueryable<UserWithRoles> GetAllUsersQueryable();
         Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
         Task<IdentityResult> UpdateUserAsync(ApplicationUser user);
         Task<IdentityResult> DeleteUserAsync(string userId);
@@ -22,7 +22,6 @@ namespace Wheels_in_Csharp.Services.Interfaces
         Task<bool> IsUserAdminAsync(string userId);
     }
 
-    // Classe auxiliar para retornar usuários com suas roles
     public class UserWithRoles
     {
         public string Id { get; set; }

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Wheels_in_Csharp.Models;
 
-[Route("api/admin")]  // Rota base para APIs
-[ApiController]       // Indica que é um controller de API
+[Route("api/admin")]
+[ApiController]
 public class AdminController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -18,7 +18,7 @@ public class AdminController : ControllerBase
         _roleManager = roleManager;
     }
 
-    [HttpGet("promote-to-admin")]  // Rota: GET /api/admin/promote-to-admin?userEmail=xxx
+    [HttpGet("promote-to-admin")]
     public async Task<ActionResult<string>> PromoteToAdmin([FromQuery] string userEmail)
     {
         if (string.IsNullOrEmpty(userEmail))
@@ -26,13 +26,11 @@ public class AdminController : ControllerBase
             return BadRequest("O e-mail do usuário é obrigatório.");
         }
 
-        // 1. Verifica se a role "Admin" existe
         if (!await _roleManager.RoleExistsAsync("Admin"))
         {
             await _roleManager.CreateAsync(new IdentityRole("Admin"));
         }
 
-        // 2. Busca o usuário pelo e-mail
         var user = await _userManager.FindByEmailAsync(userEmail);
 
         if (user == null)
@@ -40,13 +38,11 @@ public class AdminController : ControllerBase
             return NotFound($"Usuário com e-mail {userEmail} não encontrado.");
         }
 
-        // 3. Verifica se o usuário já é admin
         if (await _userManager.IsInRoleAsync(user, "Admin"))
         {
             return Ok($"O usuário {userEmail} já é um administrador.");
         }
 
-        // 4. Adiciona a role "Admin" ao usuário
         await _userManager.AddToRoleAsync(user, "Admin");
 
         return Ok($"✅ Usuário {userEmail} promovido a ADMIN com sucesso!");

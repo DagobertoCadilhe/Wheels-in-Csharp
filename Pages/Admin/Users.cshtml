@@ -18,11 +18,11 @@
             <form method="get" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Nome</label>
-                    <input type="text" class="form-control" asp-for="NameFilter" placeholder="Filtrar por nome">
+                    <input type="text" class="form-control" asp-for="NameFilter" placeholder="Filtrar por nome" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">E-mail</label>
-                    <input type="text" class="form-control" asp-for="EmailFilter" placeholder="Filtrar por e-mail">
+                    <input type="text" class="form-control" asp-for="EmailFilter" placeholder="Filtrar por e-mail" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Tipo</label>
@@ -80,21 +80,21 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a asp-page="UserDetails" asp-route-id="@user.Id" class="btn btn-outline-primary">
+                                        <a asp-page="UserDetails" asp-route-id="@user.Id" class="btn btn-outline-primary" title="Visualizar">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a asp-page="EditUser" asp-route-id="@user.Id" class="btn btn-outline-secondary">
+                                        <a asp-page="EditUser" asp-route-id="@user.Id" class="btn btn-outline-secondary" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <form method="post" asp-page-handler="ToggleStatus" asp-route-userId="@user.Id" class="d-inline">
-                                            <button type="submit" class="btn btn-outline-@(user.EmailConfirmed ? "warning" : "success")">
+                                            <button type="submit" class="btn btn-outline-@(user.EmailConfirmed ? "warning" : "success")" title="Ativar/Desativar">
                                                 <i class="bi bi-@(user.EmailConfirmed ? "x-circle" : "check-circle")"></i>
                                             </button>
                                         </form>
                                         <form method="post" asp-page-handler="Delete" asp-route-userId="@user.Id"
                                               onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');"
                                               class="d-inline">
-                                            <button type="submit" class="btn btn-outline-danger">
+                                            <button type="submit" class="btn btn-outline-danger" title="Excluir">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

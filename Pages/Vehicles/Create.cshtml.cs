@@ -71,7 +71,6 @@ namespace Wheels_in_Csharp.Pages
         [StringLength(30, ErrorMessage = "A cor deve ter no máximo 30 caracteres")]
         public string? Color { get; set; }
 
-        // Propriedades específicas para Car
         [BindProperty]
         public string? FuelType { get; set; }
 
@@ -85,7 +84,6 @@ namespace Wheels_in_Csharp.Pages
         [BindProperty]
         public bool HasAC { get; set; }
 
-        // Propriedades específicas para Motorcycle
         [BindProperty]
         [Range(50, 2000, ErrorMessage = "A capacidade do motor deve estar entre 50cc e 2000cc")]
         public int EngineCapacity { get; set; } = 150;
@@ -93,7 +91,6 @@ namespace Wheels_in_Csharp.Pages
         [BindProperty]
         public bool HasHelmet { get; set; }
 
-        // Propriedades específicas para Bicycle
         [BindProperty]
         public string? BikeType { get; set; }
 

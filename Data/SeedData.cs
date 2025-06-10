@@ -6,10 +6,9 @@ namespace Wheels_in_Csharp.Data
     public static class SeedData
     {
         public static async Task Initialize(IServiceProvider serviceProvider,
-                                          UserManager<ApplicationUser> userManager,
-                                          RoleManager<IdentityRole> roleManager)
+                                            UserManager<ApplicationUser> userManager,
+                                            RoleManager<IdentityRole> roleManager)
         {
-            // Cria roles
             string[] roleNames = { "Admin", "Customer" };
             foreach (var roleName in roleNames)
             {
@@ -20,7 +19,6 @@ namespace Wheels_in_Csharp.Data
                 }
             }
 
-            // Cria admin user
             var adminUser = new ApplicationUser
             {
                 UserName = "admin@wheels.com",

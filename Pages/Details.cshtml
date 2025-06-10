@@ -12,17 +12,12 @@
     <div class="row">
         <div class="col-md-8">
             <h1 class="display-4 mb-4">@Model.Vehicle.Model</h1>
-            
-            <!-- Galeria de imagens -->
             <div class="mb-4">
                 <img class="img-fluid rounded-lg shadow" src="@Model.Vehicle.ImagemUri" alt="@Model.Vehicle.Model">
                 <div class="d-flex mt-2">
                     <img src="@Model.Vehicle.ImagemUri" class="img-thumbnail mr-2" width="80">
-                    <!-- Adicionar mais miniaturas aqui se tiver mais imagens -->
                 </div>
             </div>
-            
-            <!-- Seção de descrição -->
             <div class="card mb-4">
                 <div class="card-body">
                     <h3 class="card-title">Descrição</h3>
@@ -30,20 +25,16 @@
                 </div>
             </div>
         </div>
-        
         <div class="col-md-4">
-            <!-- Card de informações -->
             <div class="card shadow-sm sticky-top" style="top: 20px;">
                 <div class="card-body">
                     <h3 class="card-title">Informações do Veículo</h3>
-                    
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="mb-0 text-primary" style="color: #699e73 !important">@Html.DisplayFor(model => model.Vehicle.HourlyRate)/hora</h4>
                         <span class="badge @Model.GetStatusBadgeClass(Model.Vehicle.Status)">
                             @Model.GetStatusDisplayName(Model.Vehicle.Status)
                         </span>
                     </div>
-                    
                     @if (Model.Vehicle.Status == VehicleStatus.AVAILABLE)
                     {
                         <a asp-page="/Rent" asp-route-vehicleId="@Model.Vehicle.Id" class="btn btn-primary btn-lg w-100 mb-3">
@@ -59,15 +50,11 @@
                             @Model.GetStatusDisplayName(Model.Vehicle.Status)
                         </button>
                     }
-                    
                     <hr>
-                    
                     <div class="d-flex justify-content-between mb-2">
                         <span>Placa:</span>
                         <strong>@Model.Vehicle.LicensePlate</strong>
                     </div>
-                    
-                    <!-- Mostrar detalhes específicos do tipo de veículo -->
                     @if (Model.Vehicle is Bicycle bicycle)
                     {
                         <div class="d-flex justify-content-between mb-2">
@@ -105,47 +92,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Seção de veículos similares -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="mb-4">Veículos similares</h3>
-            <div class="row">
-                <!-- Aqui você pode adicionar um loop para mostrar veículos similares -->
-                <!-- Exemplo: -->
-                <!-- @foreach (var similarVehicle in Model.SimilarVehicles) -->
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="~/images/vehicle-placeholder.jpg" class="card-img-top" alt="Veículo similar">
-                        <div class="card-body">
-                            <h5 class="card-title">Modelo Similar</h5>
-                            <p class="card-text">Descrição breve do veículo similar.</p>
-                            <p class="text-primary">R$ XX/hora</p>
-                            <a href="#" class="btn btn-outline-primary">Ver detalhes</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Repetir para outros veículos -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Ações administrativas -->
-    @if (User.IsInRole("Admin"))
-    {
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-end">
-                    <a class="btn btn-primary me-2" asp-page="/Edit" asp-route-id="@Model.Vehicle.Id">
-                        <i class="bi bi-pencil"></i> Editar
-                    </a>
-                    <a class="btn btn-danger" asp-page="/Delete" asp-route-id="@Model.Vehicle.Id">
-                        <i class="bi bi-trash"></i> Excluir
-                    </a>
-                </div>
-            </div>
-        </div>
-    }
 </div>
 
 @functions {
@@ -181,15 +127,18 @@
         position: -webkit-sticky;
         position: sticky;
     }
+
     .card {
         border-radius: 10px;
         overflow: hidden;
     }
+
     .img-thumbnail {
         cursor: pointer;
         transition: transform 0.2s;
     }
-    .img-thumbnail:hover {
-        transform: scale(1.05);
-    }
+
+        .img-thumbnail:hover {
+            transform: scale(1.05);
+        }
 </style>

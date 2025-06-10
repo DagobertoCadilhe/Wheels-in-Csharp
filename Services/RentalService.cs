@@ -66,7 +66,7 @@ namespace Wheels_in_Csharp.Services
 
         public async Task<Rental> CreateRentalAsync(Rental rental)
         {
-            if (rental.Id == 0) // New rental
+            if (rental.Id == 0)
             {
                 if (!await IsVehicleAvailableForRentalAsync(rental.VehicleId, rental.StartTime, rental.EndTime))
                     throw new InvalidOperationException("Vehicle is not available for the selected period");
@@ -79,7 +79,7 @@ namespace Wheels_in_Csharp.Services
 
                 _context.Rentals.Add(rental);
             }
-            else // Existing rental
+            else
             {
                 _context.Rentals.Update(rental);
             }
@@ -97,12 +97,8 @@ namespace Wheels_in_Csharp.Services
                 throw new InvalidOperationException("Only active rentals can be completed");
 
             rental.Status = RentalStatus.COMPLETED;
-
-            // MUDANÇA: Como não existe ActualEndTime, vamos usar EndTime como referência
-            // Se quiser registrar o momento exato da finalização, atualize o EndTime
             rental.EndTime = DateTime.Now;
 
-            // Recalculate cost based on actual usage
             var actualDuration = rental.EndTime - rental.StartTime;
             var hoursUsed = (decimal)Math.Ceiling(actualDuration.TotalHours);
             rental.TotalCost = hoursUsed * rental.RentedVehicle.HourlyRate;
@@ -135,7 +131,6 @@ namespace Wheels_in_Csharp.Services
             if (rental == null) throw new ArgumentException("Rental not found");
             if (newEndDate <= rental.EndTime) throw new ArgumentException("New end date must be after current end date");
 
-            // Check vehicle availability for extension period
             if (!await IsVehicleAvailableForRentalAsync(rental.VehicleId, rental.EndTime, newEndDate, rentalId))
                 throw new InvalidOperationException("Vehicle not available for the extended period");
 

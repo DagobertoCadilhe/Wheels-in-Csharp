@@ -25,18 +25,15 @@ namespace Wheels_in_Csharp.Pages
         {
             try
             {
-                // Obter todos os veículos disponíveis
                 var allVehicles = await _vehicleService.GetAvailableVehiclesAsync();
 
-                // Ordenar por mais recentes primeiro
                 Vehicles = allVehicles
                     .OrderByDescending(v => v.Year)
                     .ThenBy(v => v.Model)
                     .ToList();
 
-                // Destaques (últimos 3 veículos adicionados)
                 FeaturedVehicles = allVehicles
-                    .OrderByDescending(v => v is Car) // Prioriza carros
+                    .OrderByDescending(v => v is Car)
                     .ThenByDescending(v => v.Year)
                     .Take(3)
                     .ToList();

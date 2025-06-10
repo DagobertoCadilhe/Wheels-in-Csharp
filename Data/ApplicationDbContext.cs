@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Composition;
 using Wheels_in_Csharp.Models;
 
 namespace Wheels_in_Csharp.Data
@@ -23,14 +22,12 @@ namespace Wheels_in_Csharp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuração da herança de Vehicle (TPH - Table Per Hierarchy)
             modelBuilder.Entity<Vehicle>()
                 .HasDiscriminator<string>("VehicleType")
                 .HasValue<Bicycle>("Bicycle")
                 .HasValue<Car>("Car")
                 .HasValue<Motorcycle>("Motorcycle");
 
-            // Configuração do ApplicationUser
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.Property(u => u.FullName).HasMaxLength(100);
@@ -39,7 +36,6 @@ namespace Wheels_in_Csharp.Data
                 entity.Property(u => u.Address).HasMaxLength(200);
             });
 
-            // Configuração de Vehicle
             modelBuilder.Entity<Vehicle>(entity =>
             {
                 entity.Property(v => v.Model).HasMaxLength(100);
@@ -47,22 +43,18 @@ namespace Wheels_in_Csharp.Data
                 entity.Property(v => v.HourlyRate).HasColumnType("decimal(18,2)");
             });
 
-            // Configuração de Rental
             modelBuilder.Entity<Rental>(entity =>
             {
-                // Relacionamento com ApplicationUser (Customer)
                 entity.HasOne(r => r.Customer)
                       .WithMany(u => u.Rentals)
                       .HasForeignKey(r => r.CustomerId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                // Relacionamento com Vehicle
                 entity.HasOne(r => r.RentedVehicle)
                       .WithMany()
                       .HasForeignKey(r => r.VehicleId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                // Relacionamento com Payment (opcional)
                 entity.HasOne(r => r.PaymentInfo)
                       .WithMany()
                       .HasForeignKey(r => r.PaymentId)
@@ -71,34 +63,28 @@ namespace Wheels_in_Csharp.Data
                 entity.Property(r => r.TotalCost).HasColumnType("decimal(18,2)");
             });
 
-            // Configuração de Payment
             modelBuilder.Entity<Payment>(entity =>
             {
-                // Relacionamento com ApplicationUser (Payer)
                 entity.HasOne(p => p.Payer)
                       .WithMany()
                       .HasForeignKey(p => p.PayerId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                // Correção: Relacionamento com PaymentMethod
                 entity.HasOne(p => p.PaymentMethod)
-                      .WithMany(pm => pm.Payments)  // Adicionando a navegação inversa
+                      .WithMany(pm => pm.Payments)
                       .HasForeignKey(p => p.PaymentMethodId)
                       .OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(p => p.Amount).HasColumnType("decimal(18,2)");
             });
 
-            // Configuração de PaymentMethod (atualizada para incluir navegação inversa)
             modelBuilder.Entity<PaymentMethod>(entity =>
             {
-                // Relacionamento com ApplicationUser
                 entity.HasOne(pm => pm.User)
                       .WithMany(u => u.PaymentMethods)
                       .HasForeignKey(pm => pm.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
 
-                // Adicionando a coleção de Payments
                 entity.HasMany(pm => pm.Payments)
                       .WithOne(p => p.PaymentMethod)
                       .HasForeignKey(p => p.PaymentMethodId)
@@ -110,17 +96,14 @@ namespace Wheels_in_Csharp.Data
                 entity.Property(pm => pm.PixKey).HasMaxLength(50);
             });
 
-            // Configuração de Report
             modelBuilder.Entity<Report>(entity =>
             {
-                // Relacionamento com ApplicationUser (GeneratedBy)
                 entity.HasOne(r => r.GeneratedBy)
                       .WithMany()
                       .HasForeignKey(r => r.GeneratedById)
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // Configuração de índices para melhor performance
             modelBuilder.Entity<Vehicle>()
                 .HasIndex(v => new { v.Available, v.Status });
 
@@ -136,7 +119,6 @@ namespace Wheels_in_Csharp.Data
             modelBuilder.Entity<PaymentMethod>()
                 .HasIndex(pm => pm.UserId);
 
-            // Configuração de valores padrão
             modelBuilder.Entity<Vehicle>()
                 .Property(v => v.Status)
                 .HasDefaultValue(VehicleStatus.AVAILABLE);

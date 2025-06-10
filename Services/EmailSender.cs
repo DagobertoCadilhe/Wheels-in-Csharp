@@ -13,12 +13,10 @@ namespace Wheels_in_Csharp.Services
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            // Para desenvolvimento, apenas loga o email que seria enviado
             _logger.LogInformation($"Email seria enviado para: {email}");
             _logger.LogInformation($"Assunto: {subject}");
             _logger.LogInformation($"Mensagem: {htmlMessage}");
 
-            // Simula envio bem-sucedido
             return Task.CompletedTask;
         }
     }

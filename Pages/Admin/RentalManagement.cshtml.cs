@@ -27,7 +27,6 @@ namespace Wheels_in_Csharp.Pages.Admin
             _logger = logger;
         }
 
-        // Propriedades para filtros
         [BindProperty(SupportsGet = true)]
         public string StatusFilter { get; set; }
 
@@ -37,22 +36,18 @@ namespace Wheels_in_Csharp.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public DateTime? EndDateFilter { get; set; }
 
-        // Paginação
         [BindProperty(SupportsGet = true)]
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
         public const int PageSize = 10;
 
-        // Listas para exibição
         public List<RentalViewModel> Rentals { get; set; } = new();
-        public List<ApplicationUser> Customers { get; set; } = new(); // Mudança: User para ApplicationUser
+        public List<ApplicationUser> Customers { get; set; } = new();
         public List<Vehicle> AvailableVehicles { get; set; } = new();
 
-        // Modelo para novo aluguel
         [BindProperty]
         public CreateRentalDto NewRental { get; set; } = new();
 
-        // Modelo para relatório
         [BindProperty]
         public string ReportType { get; set; }
         [BindProperty]
@@ -64,25 +59,19 @@ namespace Wheels_in_Csharp.Pages.Admin
         {
             try
             {
-                // Carrega clientes e veículos para os dropdowns
-                // Mudança: Usar GetAllUsersAsync() em vez de GetAllCustomersAsync()
                 var allUsers = await _userService.GetAllUsersAsync();
                 Customers = allUsers.ToList();
 
-                // Assumindo que existe GetAvailableVehiclesAsync no IVehicleService
-                // Se não existir, você precisa implementar ou usar outro método
                 try
                 {
                     AvailableVehicles = (await _vehicleService.GetAvailableVehiclesAsync()).ToList();
                 }
                 catch
                 {
-                    // Fallback se GetAvailableVehiclesAsync não existir
                     var allVehicles = await _vehicleService.GetAllVehiclesAsync();
                     AvailableVehicles = allVehicles.Where(v => v.Status == VehicleStatus.AVAILABLE).ToList();
                 }
 
-                // Mudança: Usar GetFilteredRentalsAsync em vez de query manual
                 var rentals = await _rentalService.GetFilteredRentalsAsync(
                     StatusFilter,
                     StartDateFilter,
@@ -90,14 +79,12 @@ namespace Wheels_in_Csharp.Pages.Admin
                     CurrentPage,
                     PageSize);
 
-                // Calcular total de páginas
                 var totalItems = await _rentalService.GetRentalsCountAsync(
                     StatusFilter,
                     StartDateFilter,
                     EndDateFilter);
                 TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
 
-                // Mapeia para ViewModel
                 Rentals = rentals.Select(r => new RentalViewModel
                 {
                     Id = r.Id,
@@ -122,7 +109,7 @@ namespace Wheels_in_Csharp.Pages.Admin
             {
                 if (!ModelState.IsValid)
                 {
-                    await OnGetAsync(); // Recarrega dados para a página
+                    await OnGetAsync();
                     return Page();
                 }
 
@@ -132,11 +119,8 @@ namespace Wheels_in_Csharp.Pages.Admin
                     VehicleId = NewRental.VehicleId,
                     StartTime = NewRental.StartDate,
                     EndTime = NewRental.EndDate,
-                    // Mudança: Não definir TotalCost aqui, deixar o serviço calcular
-                    // TotalCost será calculado automaticamente no CreateRentalAsync
                 };
 
-                // Mudança: Verificar se o enum parse é válido
                 if (Enum.TryParse<RentalStatus>(NewRental.Status, out var status))
                 {
                     rental.Status = status;
@@ -190,17 +174,13 @@ namespace Wheels_in_Csharp.Pages.Admin
         {
             try
             {
-                // Mudança: Usar os métodos disponíveis no serviço para gerar relatório
                 var reportData = await _rentalService.GetFilteredRentalsAsync(
-                    null, // Todos os status
+                    null,
                     ReportStartDate,
                     ReportEndDate,
-                    1, // Primeira página
-                    1000 // Limite alto para pegar todos os registros do período
+                    1,
+                    1000
                 );
-
-                // Aqui você pode implementar a lógica de geração do relatório
-                // Por exemplo, exportar para Excel, PDF, etc.
 
                 TempData["SuccessMessage"] = "Relatório gerado com sucesso!";
                 return RedirectToPage();
@@ -214,7 +194,6 @@ namespace Wheels_in_Csharp.Pages.Admin
         }
     }
 
-    // Classes DTO para a página
     public class RentalViewModel
     {
         public int Id { get; set; }
@@ -233,6 +212,6 @@ namespace Wheels_in_Csharp.Pages.Admin
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal TotalCost { get; set; }
-        public string Status { get; set; } = "ACTIVE"; // Mudança: Usar valor válido do enum
+        public string Status { get; set; } = "ACTIVE";
     }
 }

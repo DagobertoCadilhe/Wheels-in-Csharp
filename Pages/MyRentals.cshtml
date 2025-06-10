@@ -32,7 +32,6 @@
         </div>
     }
 
-    <!-- Lista de Aluguéis -->
     <div class="row">
         @foreach (var rental in Model.UserRentals)
         {
@@ -107,16 +106,6 @@
                                         <input type="hidden" name="rentalId" value="@rental.Id" />
                                         <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i> Devolver Veículo
-                                        </button>
-                                    </form>
-                                }
-
-                                @if (rental.CanBeCanceled)
-                                {
-                                    <form method="post" asp-page-handler="CancelRental">
-                                        <input type="hidden" name="rentalId" value="@rental.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times"></i> Cancelar Aluguel
                                         </button>
                                     </form>
                                 }

@@ -6,7 +6,6 @@
 }
 
 <div class="container mt-4">
-    <!-- Mensagens de Feedback -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -39,7 +38,6 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <!-- Tipo de Veículo -->
                         <div class="form-group">
                             <label asp-for="VehicleType" class="control-label font-weight-bold">Tipo de Veículo</label>
                             <select asp-for="VehicleType" asp-items="Model.VehicleTypes" class="form-control form-control-lg">
@@ -48,18 +46,15 @@
                             <span asp-validation-for="VehicleType" class="text-danger"></span>
                         </div>
 
-                        <!-- Informações Básicas -->
                         <div class="form-group">
                             <label asp-for="Model" class="control-label font-weight-bold">Modelo</label>
                             <input asp-for="Model" class="form-control" placeholder="Ex: Gol 1.0" />
                             <span asp-validation-for="Model" class="text-danger"></span>
                         </div>
 
-                        <!-- URL da Imagem -->
                         <div class="form-group">
                             <label asp-for="ImagemUri" class="control-label font-weight-bold">URL da Imagem do Veículo</label>
-                            <input asp-for="ImagemUri" class="form-control"
-                                   placeholder="https://exemplo.com/imagem.jpg" />
+                            <input asp-for="ImagemUri" class="form-control" placeholder="https://exemplo.com/imagem.jpg" />
                             <div class="mt-2" id="imagePreview" style="display: none;">
                                 <img id="previewImage" src="#" alt="Pré-visualização" class="img-thumbnail" style="max-height: 150px;">
                             </div>
@@ -111,7 +106,6 @@
                     </div>
                 </div>
 
-                <!-- Campos Opcionais -->
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -136,9 +130,7 @@
                     </div>
                 </div>
 
-                <!-- Campos específicos por tipo de veículo -->
                 <div class="mt-4" id="specificFields">
-                    <!-- Carro -->
                     <div id="carFields" class="vehicle-specific" style="display: none;">
                         <h4 class="border-bottom pb-2"><i class="fas fa-car mr-2"></i>Informações do Carro</h4>
                         <div class="row">
@@ -183,7 +175,6 @@
                         </div>
                     </div>
 
-                    <!-- Moto -->
                     <div id="motorcycleFields" class="vehicle-specific" style="display: none;">
                         <h4 class="border-bottom pb-2"><i class="fas fa-motorcycle mr-2"></i>Informações da Moto</h4>
                         <div class="row">
@@ -201,7 +192,6 @@
                         </div>
                     </div>
 
-                    <!-- Bicicleta -->
                     <div id="bicycleFields" class="vehicle-specific" style="display: none;">
                         <h4 class="border-bottom pb-2"><i class="fas fa-bicycle mr-2"></i>Informações da Bicicleta</h4>
                         <div class="row">
@@ -251,14 +241,11 @@
     }
 
     <script>
-        // Mostrar campos específicos conforme o tipo de veículo selecionado
         document.getElementById('VehicleType').addEventListener('change', function() {
-            // Hide all specific fields first
             document.querySelectorAll('.vehicle-specific').forEach(el => {
                 el.style.display = 'none';
             });
 
-            // Show fields for selected type
             if (this.value === 'Car') {
                 document.getElementById('carFields').style.display = 'block';
             } else if (this.value === 'Motorcycle') {
@@ -268,7 +255,6 @@
             }
         });
 
-        // Pré-visualização da imagem via URL
         document.querySelector("input[name='ImagemUri']").addEventListener('input', function() {
             var url = this.value;
             var imagePreview = document.getElementById('imagePreview');
@@ -282,20 +268,17 @@
             }
         });
 
-        // Feedback visual durante o envio do formulário
         document.getElementById('vehicleForm').addEventListener('submit', function() {
             var submitBtn = document.getElementById('submitButton');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Cadastrando...';
 
-            // Reabilitar o botão após 10 segundos como segurança
             setTimeout(function() {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Cadastrar Veículo';
             }, 10000);
         });
 
-        // Auto-hide alerts após 5 segundos
         setTimeout(function() {
             var alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
@@ -309,7 +292,6 @@
             });
         }, 5000);
 
-        // Trigger change event on page load if there's a selected value
         document.addEventListener('DOMContentLoaded', function() {
             var vehicleTypeSelect = document.getElementById('VehicleType');
             if (vehicleTypeSelect.value) {

@@ -9,15 +9,12 @@ using Wheels_in_Csharp.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração da conexão
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Configuração do DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString,
     sqlOptions => sqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-// Configuração do Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -34,7 +31,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Configuração de cookies
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -50,15 +46,12 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
-// Registro do EmailSender
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// Registro dos serviços
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// Configuração do MVC e API Controllers
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(options =>
 {
@@ -67,7 +60,6 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Account/Register");
 });
 
-// Configuração do CORS (se necessário para API)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -80,7 +72,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Pipeline de requisições
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -91,7 +82,6 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-// Configuração do banco de dados e roles
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -101,10 +91,8 @@ using (var scope = app.Services.CreateScope())
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // Aplicar migrações
         await context.Database.MigrateAsync();
 
-        // Criar roles padrão se não existirem
         string[] roles = { "Admin", "Customer" };
         foreach (var role in roles)
         {
@@ -114,7 +102,6 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        // Criar admin padrão se não existir
         var adminEmail = "admin@wheels.com";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
@@ -134,7 +121,6 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
 
-        // Promover usuário específico a admin (opcional)
         var specificUserEmail = "reluxaccs@gmail.com";
         var specificUser = await userManager.FindByEmailAsync(specificUserEmail);
 
@@ -155,7 +141,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCookiePolicy();
 
-// Habilitar CORS (antes do UseRouting)
 app.UseCors("AllowAll");
 
 app.UseRouting();
@@ -163,11 +148,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Mapeamento dos endpoints
-app.MapControllers();  // IMPORTANTE: Para habilitar os API Controllers
+app.MapControllers();
 app.MapRazorPages();
 
-// Endpoint para debug de rotas (opcional)
 app.MapGet("/debug/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
 {
     var sb = new StringBuilder();

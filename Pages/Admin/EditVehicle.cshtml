@@ -150,14 +150,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Formata a data de manutenção para o input date
             const lastMaintenanceInput = document.querySelector('input[name="VehicleEdit.LastMaintenance"]');
             if (lastMaintenanceInput) {
                 const date = new Date('@Model.VehicleEdit.LastMaintenance.ToString("yyyy-MM-dd")');
                 lastMaintenanceInput.valueAsDate = date;
             }
 
-            // Validação para imagem - pelo menos um método deve ser fornecido
             const form = document.querySelector('form');
             form.addEventListener('submit', function(e) {
                 const imageUrl = document.querySelector('input[name="VehicleEdit.NewImageUrl"]').value;

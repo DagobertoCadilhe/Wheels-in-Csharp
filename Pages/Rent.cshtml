@@ -13,7 +13,6 @@
         </div>
     </div>
 
-    <!-- Filtros -->
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">Filtros</h5>
@@ -53,7 +52,6 @@
         </div>
     </div>
 
-    <!-- Lista de Veículos -->
     <div class="row" id="vehiclesList">
         @foreach (var vehicle in Model.AvailableVehicles)
         {
@@ -66,7 +64,6 @@
                         <h5 class="card-title">@vehicle.Model (@vehicle.Year)</h5>
                         <p class="card-text text-muted small">@vehicle.Description</p>
 
-                        <!-- Detalhes específicos por tipo -->
                         @if (vehicle is Wheels_in_Csharp.Models.Car car)
                         {
                             <div class="mb-2">
@@ -142,7 +139,6 @@
     }
 </div>
 
-<!-- Modal de Aluguel -->
 <div class="modal fade" id="rentalModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -199,7 +195,6 @@
     </div>
 </div>
 
-<!-- Loading Modal -->
 <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -228,13 +223,11 @@
             document.getElementById('selectedVehicleName').value = vehicleName;
             document.getElementById('hourlyRateDisplay').textContent = `R$ ${hourlyRate.toFixed(2)}`;
 
-            // Definir data/hora mínima como agora
             const now = new Date();
             const isoString = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
             document.getElementById('startDateTime').min = isoString;
             document.getElementById('startDateTime').value = isoString;
 
-            // Definir data fim padrão (2 horas depois)
             const endTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
             const endIsoString = new Date(endTime.getTime() - endTime.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
             document.getElementById('endDateTime').value = endIsoString;
@@ -281,7 +274,6 @@
                 return;
             }
 
-            // Mostrar loading
             const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
             loadingModal.show();
 
@@ -304,7 +296,7 @@
                     throw new Error(errorData.message || 'Erro ao criar aluguel');
                 }
 
-                const result = await response.json();
+                await response.json();
 
                 loadingModal.hide();
                 bootstrap.Modal.getInstance(document.getElementById('rentalModal')).hide();
@@ -351,11 +343,9 @@
             });
         }
 
-        // Event listeners
         document.getElementById('startDateTime').addEventListener('change', calculateCost);
         document.getElementById('endDateTime').addEventListener('change', calculateCost);
 
-        // Atualizar data fim mínima quando data início mudar
         document.getElementById('startDateTime').addEventListener('change', function() {
             const startValue = this.value;
             if (startValue) {

@@ -20,7 +20,6 @@ namespace Wheels_in_Csharp.Pages.Admin
             _logger = logger;
         }
 
-        // Filtros
         [BindProperty(SupportsGet = true)]
         public string NameFilter { get; set; }
 
@@ -30,13 +29,11 @@ namespace Wheels_in_Csharp.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public string RoleFilter { get; set; }
 
-        // Paginação
         [BindProperty(SupportsGet = true)]
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
         public const int PageSize = 10;
 
-        // Lista de usuários para exibição
         public List<UserViewModel> Users { get; set; } = new();
 
         public async Task OnGetAsync()
@@ -45,7 +42,6 @@ namespace Wheels_in_Csharp.Pages.Admin
             {
                 var usersQuery = _userService.GetAllUsersQueryable();
 
-                // Aplicar filtros
                 if (!string.IsNullOrEmpty(NameFilter))
                 {
                     usersQuery = usersQuery.Where(u => u.FullName.Contains(NameFilter));
@@ -61,7 +57,6 @@ namespace Wheels_in_Csharp.Pages.Admin
                     usersQuery = usersQuery.Where(u => u.Roles.Any(r => r == RoleFilter));
                 }
 
-                // Paginação
                 var totalItems = await usersQuery.CountAsync();
                 TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
 
@@ -70,7 +65,6 @@ namespace Wheels_in_Csharp.Pages.Admin
                     .Take(PageSize)
                     .ToListAsync();
 
-                // Mapear para ViewModel
                 Users = users.Select(u => new UserViewModel
                 {
                     Id = u.Id,
@@ -118,7 +112,8 @@ namespace Wheels_in_Csharp.Pages.Admin
                 TempData["ErrorMessage"] = "Erro ao alterar status do usuário. Por favor, tente novamente.";
             }
 
-            return RedirectToPage(new { 
+            return RedirectToPage(new
+            {
                 currentPage = CurrentPage,
                 nameFilter = NameFilter,
                 emailFilter = EmailFilter,
@@ -146,7 +141,8 @@ namespace Wheels_in_Csharp.Pages.Admin
                 TempData["ErrorMessage"] = "Erro ao excluir usuário. Por favor, tente novamente.";
             }
 
-            return RedirectToPage(new { 
+            return RedirectToPage(new
+            {
                 currentPage = CurrentPage,
                 nameFilter = NameFilter,
                 emailFilter = EmailFilter,

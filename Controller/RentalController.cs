@@ -36,7 +36,6 @@ namespace Wheels_in_Csharp.Controllers
             {
                 _logger.LogInformation("Iniciando criação de aluguel...");
 
-                // Validações básicas
                 if (request.StartDate >= request.EndDate)
                 {
                     _logger.LogWarning("Data de início posterior ou igual à data de fim");
@@ -63,14 +62,12 @@ namespace Wheels_in_Csharp.Controllers
                     return NotFound(new { message = "Veículo não encontrado." });
                 }
 
-                // Verificar disponibilidade
                 if (!await _rentalService.IsVehicleAvailableForRentalAsync(request.VehicleId, request.StartDate, request.EndDate))
                 {
                     _logger.LogWarning($"Veículo {request.VehicleId} não disponível no período solicitado");
                     return BadRequest(new { message = "O veículo não está disponível para aluguel no período selecionado." });
                 }
 
-                // Calcular custo
                 var estimatedCost = await _rentalService.CalculateRentalCostAsync(request.VehicleId, request.StartDate, request.EndDate);
                 if (estimatedCost <= 0)
                 {
@@ -78,7 +75,6 @@ namespace Wheels_in_Csharp.Controllers
                     return BadRequest(new { message = "Não foi possível calcular o custo do aluguel." });
                 }
 
-                // Criar aluguel
                 var rental = new Rental
                 {
                     CustomerId = customerId,
@@ -90,7 +86,7 @@ namespace Wheels_in_Csharp.Controllers
                 };
 
                 var createdRental = await _rentalService.CreateRentalAsync(rental);
-                _logger.LogInformation($"Aluguel criado      sucesso: ID {createdRental.Id}");
+                _logger.LogInformation($"Aluguel criado com sucesso: ID {createdRental.Id}");
 
                 return Ok(new
                 {

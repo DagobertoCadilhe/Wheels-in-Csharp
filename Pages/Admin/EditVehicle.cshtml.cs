@@ -75,7 +75,6 @@ namespace Wheels_in_Csharp.Pages.Admin
                     return NotFound();
                 }
 
-                // Processar imagem
                 if (ImageFile != null && ImageFile.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "vehicles");
@@ -99,7 +98,6 @@ namespace Wheels_in_Csharp.Pages.Admin
                     vehicle.ImagemUri = VehicleEdit.NewImageUrl;
                 }
 
-                // Atualizar outras propriedades
                 vehicle.Model = VehicleEdit.Model;
                 vehicle.Year = VehicleEdit.Year;
                 vehicle.HourlyRate = VehicleEdit.HourlyRate;
