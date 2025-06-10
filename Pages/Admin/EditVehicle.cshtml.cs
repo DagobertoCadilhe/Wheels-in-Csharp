@@ -12,24 +12,18 @@ namespace Wheels_in_Csharp.Pages.Admin
     public class EditVehicleModel : PageModel
     {
         private readonly IVehicleService _vehicleService;
-        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<EditVehicleModel> _logger;
 
         public EditVehicleModel(
             IVehicleService vehicleService,
-            IWebHostEnvironment environment,
             ILogger<EditVehicleModel> logger)
         {
             _vehicleService = vehicleService;
-            _environment = environment;
             _logger = logger;
         }
 
         [BindProperty]
         public VehicleEditDto VehicleEdit { get; set; }
-
-        [BindProperty]
-        public IFormFile ImageFile { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -75,27 +69,10 @@ namespace Wheels_in_Csharp.Pages.Admin
                     return NotFound();
                 }
 
-                if (ImageFile != null && ImageFile.Length > 0)
+                // Atualiza a imagem apenas se uma nova URL foi fornecida
+                if (!string.IsNullOrEmpty(VehicleEdit.ImagemUri))
                 {
-                    var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "vehicles");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(fileStream);
-                    }
-
-                    vehicle.ImagemUri = "/uploads/vehicles/" + uniqueFileName;
-                }
-                else if (!string.IsNullOrEmpty(VehicleEdit.NewImageUrl))
-                {
-                    vehicle.ImagemUri = VehicleEdit.NewImageUrl;
+                    vehicle.ImagemUri = VehicleEdit.ImagemUri;
                 }
 
                 vehicle.Model = VehicleEdit.Model;
@@ -128,5 +105,22 @@ namespace Wheels_in_Csharp.Pages.Admin
 
             return Page();
         }
+    }
+
+    public class VehicleEditDto
+    {
+        public int Id { get; set; }
+        public string Model { get; set; } = string.Empty;
+        public int Year { get; set; }
+        public decimal HourlyRate { get; set; }
+        public string LicensePlate { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string ImagemUri { get; set; } = string.Empty;
+        public DateTime LastMaintenance { get; set; }
+        public VehicleStatus Status { get; set; }
+        public string? CurrentLocation { get; set; }
+        public int? Mileage { get; set; }
+        public string? Color { get; set; }
+        public bool Available { get; set; }
     }
 }

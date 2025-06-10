@@ -77,13 +77,20 @@ namespace Wheels_in_Csharp.Pages.Admin
         {
             try
             {
+                var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
+                if (vehicle == null)
+                {
+                    TempData["ErrorMessage"] = "Veículo não encontrado.";
+                    return RedirectToPage();
+                }
+
                 await _vehicleService.DeleteVehicleAsync(id);
-                TempData["SuccessMessage"] = "Veículo excluído com sucesso!";
+                TempData["SuccessMessage"] = $"Veículo '{vehicle.Model}' excluído com sucesso!";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao excluir veículo");
-                TempData["ErrorMessage"] = "Erro ao excluir veículo. Por favor, tente novamente.";
+                TempData["ErrorMessage"] = $"Erro ao excluir veículo: {ex.Message}";
             }
 
             return RedirectToPage(new
@@ -118,6 +125,17 @@ namespace Wheels_in_Csharp.Pages.Admin
                 VehicleStatus.DAMAGED => "Danificado",
                 VehicleStatus.RETIRED => "Aposentado",
                 _ => status.ToString()
+            };
+        }
+
+        public string GetVehicleTypeName(Vehicle vehicle)
+        {
+            return vehicle switch
+            {
+                Car => "Carro",
+                Motorcycle => "Moto",
+                Bicycle => "Bicicleta",
+                _ => "Veículo"
             };
         }
     }

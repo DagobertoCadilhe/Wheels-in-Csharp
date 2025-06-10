@@ -5,21 +5,38 @@
     ViewData["Title"] = "Veículos Disponíveis";
 }
 
-<div class="row justify-content-md-center">
-    @foreach (var vehicle in Model.Vehicles)
-    {
-        <div class="card col-3 m-3">
-            <img src="@vehicle.ImagemUri" class="p-3" style="border-radius: 25px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
-            <div class="card-body">
-                <h5 class="card-title">@vehicle.Model</h5>
-                <p class="card-text">
-                    Ano: @vehicle.Year | @vehicle.HourlyRate.ToString("C")/hora<br>
-                    Status: <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">@vehicle.Status.ToString()</span>
+@if (Model.Vehicles != null && Model.Vehicles.Any())
+{
+    <div class="row justify-content-md-center">
+        @foreach (var vehicle in Model.Vehicles)
+        {
+            <div class="card col-3 m-3">
+                <img src="@vehicle.ImagemUri" class="p-3" style="border-radius: 25px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
+                <div class="card-body">
+                    <h5 class="card-title">@vehicle.Model</h5>
+                    <p class="card-text">
+                        Ano: @vehicle.Year | @vehicle.HourlyRate.ToString("C")/hora<br>
+                        Status: <span class="badge @(vehicle.Status.ToString() == "AVAILABLE" ? "bg-success" : "bg-warning")">@vehicle.Status.ToString()</span>
+                    </p>
+                    <a class="btn btn-primary" asp-page="/Details"
+                       asp-route-slug="@vehicle.NomeSlug"
+                       asp-route-id="@vehicle.Id">Ver mais</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Nenhum veículo encontrado</h4>
+                <p class="mb-0">
+                    <i class="fas fa-car me-2"></i>
+                    Não há veículos disponíveis no momento ou nenhum veículo corresponde aos critérios de busca.
                 </p>
-                <a class="btn btn-primary" asp-page="/Details"
-                   asp-route-slug="@vehicle.NomeSlug"
-                   asp-route-id="@vehicle.Id">Ver mais</a>
             </div>
         </div>
-    }
-</div>
+    </div>
+}

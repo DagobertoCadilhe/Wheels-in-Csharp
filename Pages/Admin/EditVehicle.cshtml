@@ -15,7 +15,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post">
                 <input type="hidden" asp-for="VehicleEdit.Id" />
 
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
@@ -79,19 +79,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Imagem Atual</label>
-                                    <img src="@Model.VehicleEdit.ImagemUri" class="img-fluid rounded" style="max-height: 200px;">
-                                    <input type="hidden" asp-for="VehicleEdit.ImagemUri" />
+                                    <img src="@Model.VehicleEdit.ImagemUri" class="img-fluid rounded" style="max-height: 200px;" id="currentImage">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="VehicleEdit.NewImageUrl" class="form-label">Nova Imagem (URL)</label>
-                                    <input asp-for="VehicleEdit.NewImageUrl" class="form-control" placeholder="Cole a URL da nova imagem" />
-                                    <span asp-validation-for="VehicleEdit.NewImageUrl" class="text-danger"></span>
+                                    <label asp-for="VehicleEdit.ImagemUri" class="form-label">Nova URL da Imagem</label>
+                                    <input asp-for="VehicleEdit.ImagemUri" class="form-control" placeholder="Cole a URL da nova imagem" />
+                                    <span asp-validation-for="VehicleEdit.ImagemUri" class="text-danger"></span>
                                 </div>
-                                <div class="mb-3">
-                                    <label asp-for="ImageFile" class="form-label">Ou faça upload de uma imagem</label>
-                                    <input type="file" asp-for="ImageFile" class="form-control" />
+                                <div class="mt-2" id="imagePreview" style="display: none;">
+                                    <img id="previewImage" src="#" alt="Pré-visualização" class="img-thumbnail" style="max-height: 150px;">
                                 </div>
                             </div>
                         </div>
@@ -156,15 +154,17 @@
                 lastMaintenanceInput.valueAsDate = date;
             }
 
-            const form = document.querySelector('form');
-            form.addEventListener('submit', function(e) {
-                const imageUrl = document.querySelector('input[name="VehicleEdit.NewImageUrl"]').value;
-                const imageFile = document.querySelector('input[name="ImageFile"]').files[0];
-                const currentImage = '@Model.VehicleEdit.ImagemUri';
+            // Preview da nova imagem
+            document.querySelector("input[name='VehicleEdit.ImagemUri']").addEventListener('input', function() {
+                var url = this.value;
+                var imagePreview = document.getElementById('imagePreview');
+                var previewImage = document.getElementById('previewImage');
 
-                if (!imageUrl && !imageFile && !currentImage) {
-                    e.preventDefault();
-                    alert('Por favor, forneça uma imagem (URL ou upload) ou mantenha a imagem atual.');
+                if (url && url.match(/\.(jpeg|jpg|gif|png)$/i) {
+                    previewImage.src = url;
+                    imagePreview.style.display = 'block';
+                } else {
+                    imagePreview.style.display = 'none';
                 }
             });
         });
